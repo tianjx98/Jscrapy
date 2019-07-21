@@ -56,7 +56,6 @@ public class TestSpider extends Spider {
         Elements tag = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
         // 获取登陆页面中一个隐藏的登陆参数
         String postKey = tag.attr("value");
-
         // 获取配置文件里面的用户名和密码
         String username = settings.getString("username");
         String password = settings.getString("password");
