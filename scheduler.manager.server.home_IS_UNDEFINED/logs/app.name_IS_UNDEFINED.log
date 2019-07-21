@@ -1,0 +1,81 @@
+2019-07-14 16:31:32,138 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 25] = c1269dbfca26c4f732390b4a5559feea
+2019-07-14 16:36:00,430 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 25] = 816f5c52588d78473cac2fed45b09dda
+2019-07-14 16:43:16,273 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 26] = 2de683a47de116416422f18bc76e64eb
+2019-07-15 20:24:55,637 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 25] = 
+2019-07-15 20:25:25,624 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 25] = 
+2019-07-15 20:25:37,699 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 26] = 
+2019-07-15 20:26:19,898 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 26] = 
+2019-07-15 20:37:27,989 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 26] = 
+2019-07-15 20:41:10,716 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 26] = 
+2019-07-19 16:27:41,849 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 23] = 33e493d518adf9a7d5ec52ef759df0d8
+2019-07-19 16:28:41,758 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 23] = 7a4ce0deb10e47cd05009551f506121e
+2019-07-19 16:49:57,970 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 23] = ce5c947ef5c48e6e85f18459320d8751
+2019-07-19 16:52:37,694 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 23] = 3234b7b7778aa1f74977275bad971dca
+2019-07-19 16:53:50,464 [main] INFO  me.tianjx98.Jscrapy.utils.Main [line : 23] = d2e4426fabe5c86380e76dc2075f5742
+2019-07-21 15:15:06,556 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 30] = 启动TestSpider
+2019-07-21 15:16:24,674 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 30] = 启动TestSpider
+2019-07-21 15:16:25,327 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:16:25,332 [main] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = [[url=https://www.baidu.com, headers=[User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36], bodies=null]]
+2019-07-21 15:16:25,337 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.baidu.com HTTP/1.1
+2019-07-21 15:16:29,337 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = []
+2019-07-21 15:18:39,939 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 30] = 启动TestSpider
+2019-07-21 15:18:39,946 [main] DEBUG me.tianjx98.Jscrapy.utils.TestSpider [line : 31] = 231
+2019-07-21 15:18:40,638 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:18:40,644 [main] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = [[url=https://www.baidu.com, headers=[User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36], bodies=null]]
+2019-07-21 15:18:40,647 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.baidu.com HTTP/1.1
+2019-07-21 15:18:46,083 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = []
+2019-07-21 15:20:33,190 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 32] = 启动TestSpider
+2019-07-21 15:20:33,194 [main] DEBUG me.tianjx98.Jscrapy.utils.TestSpider [line : 33] = 231
+2019-07-21 15:20:33,194 [main] ERROR me.tianjx98.Jscrapy.utils.TestSpider [line : 34] = error
+2019-07-21 15:20:33,851 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:20:33,857 [main] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = [[url=https://www.youtube.com/, headers=[User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36], bodies=null], [url=https://www.bilibili.com/, headers=[User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36], bodies=null], [url=https://www.baidu.com, headers=[User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36], bodies=null]]
+2019-07-21 15:20:33,860 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.youtube.com/ HTTP/1.1
+2019-07-21 15:20:33,882 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.bilibili.com/ HTTP/1.1
+2019-07-21 15:20:33,883 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.baidu.com HTTP/1.1
+2019-07-21 15:20:36,621 [I/O dispatcher 2] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = []
+2019-07-21 15:20:38,594 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = []
+2019-07-21 15:20:40,147 [I/O dispatcher 3] TRACE me.tianjx98.Jscrapy.core.Engine [line : 67] = []
+2019-07-21 15:22:35,948 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 32] = 启动TestSpider
+2019-07-21 15:22:36,605 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:22:36,612 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.youtube.com/ HTTP/1.1
+2019-07-21 15:22:36,641 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.bilibili.com/ HTTP/1.1
+2019-07-21 15:22:36,651 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.baidu.com HTTP/1.1
+2019-07-21 15:22:41,486 [I/O dispatcher 3] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.baidu.comHTTP/1.1 200 OK
+2019-07-21 15:22:41,666 [I/O dispatcher 2] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.bilibili.com/HTTP/1.1 200 OK
+2019-07-21 15:22:43,185 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.youtube.com/HTTP/1.1 200 OK
+2019-07-21 15:25:46,269 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 32] = 启动TestSpider
+2019-07-21 15:25:46,938 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:25:46,945 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.youtube.com/ HTTP/1.1
+2019-07-21 15:25:46,968 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.bilibili.com/ HTTP/1.1
+2019-07-21 15:25:46,969 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.baidu.com HTTP/1.1
+2019-07-21 15:25:51,667 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.bilibili.com/HTTP/1.1 200 OK
+2019-07-21 15:25:52,181 [I/O dispatcher 3] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.baidu.comHTTP/1.1 200 OK
+2019-07-21 15:25:55,963 [I/O dispatcher 2] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 27] = https://www.youtube.com/HTTP/1.1 200 OK
+2019-07-21 15:46:53,303 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 71] = 启动TestSpider
+2019-07-21 15:46:53,970 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:46:53,980 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 15:46:57,939 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 45] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 15:46:57,947 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 15:46:58,469 [I/O dispatcher 1] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 66] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
+2019-07-21 15:49:08,537 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 78] = 启动TestSpider
+2019-07-21 15:49:09,192 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 15:49:09,200 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 15:49:11,661 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 45] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 15:49:11,670 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 15:49:12,253 [I/O dispatcher 1] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 66] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
+2019-07-21 15:49:12,255 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.pixiv.net/bookmark.php HTTP/1.1
+2019-07-21 16:21:35,917 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 85] = 启动TestSpider
+2019-07-21 16:21:36,596 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 16:21:36,603 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 16:21:39,238 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 51] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 16:21:39,247 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 16:21:40,526 [I/O dispatcher 1] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 72] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
+2019-07-21 16:21:40,530 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.pixiv.net/bookmark.php HTTP/1.1
+2019-07-21 16:26:50,251 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 93] = 启动TestSpider
+2019-07-21 16:26:50,990 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 16:26:50,997 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 16:26:54,943 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 56] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 16:26:54,953 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 16:26:57,516 [I/O dispatcher 2] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 78] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
+2019-07-21 16:26:57,521 [I/O dispatcher 2] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.pixiv.net/bookmark.php HTTP/1.1
+2019-07-21 16:27:31,247 [I/O dispatcher 3] TRACE m.t.J.http.client.AsyncHttpClient [line : 186] = 关闭异步请求客户端
