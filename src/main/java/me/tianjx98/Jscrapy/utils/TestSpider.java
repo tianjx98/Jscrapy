@@ -1,10 +1,8 @@
 package me.tianjx98.Jscrapy.utils;
 
-import me.tianjx98.Jscrapy.core.Engine;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.http.client.SyncHttpClient;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,15 +52,19 @@ public class TestSpider extends Spider {
      */
     private Object login(Response response) {
         logger.trace(response.getRequest().getUrl().toString() + response.getResponse().getStatusLine());
-        Elements select = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
+        // 可以直接在谷歌浏览器控制台复制某个标签的css选择器语法在这里用
+        Elements tag = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
         // 获取登陆页面中一个隐藏的登陆参数
-        String postKey = select.attr("value");
+        String postKey = tag.attr("value");
 
+        // 获取配置文件里面的用户名和密码
+        String username = settings.getString("username");
+        String password = settings.getString("password");
         HashMap<String, String> params = new HashMap<>();
         params.put("captcha", "");//添加参数
         params.put("g_recaptcha_response", "");
-        params.put("pixiv_id", "973970940@qq.com");
-        params.put("password", "973970940");
+        params.put("pixiv_id", username);
+        params.put("password", password);
         params.put("post_key", postKey);
         params.put("source", "pc");
         params.put("ref", "wwwtop_accounts_index");

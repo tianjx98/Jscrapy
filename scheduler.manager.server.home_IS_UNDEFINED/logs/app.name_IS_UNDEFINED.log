@@ -79,3 +79,16 @@
 2019-07-21 16:26:57,516 [I/O dispatcher 2] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 78] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
 2019-07-21 16:26:57,521 [I/O dispatcher 2] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.pixiv.net/bookmark.php HTTP/1.1
 2019-07-21 16:27:31,247 [I/O dispatcher 3] TRACE m.t.J.http.client.AsyncHttpClient [line : 186] = 关闭异步请求客户端
+2019-07-21 16:46:27,749 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 97] = 启动TestSpider
+2019-07-21 16:46:28,350 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 16:46:28,357 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 16:46:32,308 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 56] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 16:46:32,315 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 16:50:30,698 [main] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 97] = 启动TestSpider
+2019-07-21 16:50:31,365 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 51] = 创建异步请求客户端
+2019-07-21 16:50:31,374 [main] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_index HTTP/1.1
+2019-07-21 16:50:34,545 [I/O dispatcher 1] TRACE me.tianjx98.Jscrapy.utils.TestSpider [line : 56] = https://accounts.pixiv.net/login?lang=zh&source=pc&view_type=page&ref=wwwtop_accounts_indexHTTP/1.1 200 OK
+2019-07-21 16:50:34,554 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = POST https://accounts.pixiv.net/api/login?lang=zh HTTP/1.1
+2019-07-21 16:50:35,047 [I/O dispatcher 1] INFO  me.tianjx98.Jscrapy.utils.TestSpider [line : 82] = {"error":false,"message":"","body":{"success":{"return_to":"https:\/\/www.pixiv.net\/"}}}
+2019-07-21 16:50:35,048 [I/O dispatcher 1] TRACE m.t.J.http.client.AsyncHttpClient [line : 79] = GET https://www.pixiv.net/bookmark.php HTTP/1.1
+2019-07-21 16:50:38,951 [I/O dispatcher 2] TRACE m.t.J.http.client.AsyncHttpClient [line : 186] = 关闭异步请求客户端
