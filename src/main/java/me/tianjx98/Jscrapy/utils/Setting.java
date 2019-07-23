@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /**
+ * 配置文件的单例类
  * @ClassName Setting
  * @Description 配置文件的单例类
  * @Author tian
@@ -11,5 +12,6 @@ import com.typesafe.config.ConfigFactory;
  * @Version 1.0
  */
 public class Setting {
-    public static final Config settings = ConfigFactory.load("settings.conf");
+    // TODO: 读取用户的配置文件来覆盖默认配置文件
+    public static final Config SETTINGS = ConfigFactory.load("settings.conf");
 }

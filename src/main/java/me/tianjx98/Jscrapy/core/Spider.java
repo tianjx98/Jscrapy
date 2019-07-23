@@ -3,6 +3,7 @@ package me.tianjx98.Jscrapy.core;
 import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
+import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.utils.Setting;
 
 import java.util.HashSet;
@@ -18,10 +19,37 @@ import java.util.function.Function;
  * @Version 1.0
  */
 public abstract class Spider {
-    protected Config settings= Setting.settings;
-    protected Engine engine;
+    protected static final Config settings = Setting.SETTINGS;
+    /**
+     * 爬虫的名称
+     */
+    protected String name;
+    /**
+     * 允许爬取的域名，如果该set不为空，且请求的域名不在里面，则丢弃该请求
+     * 如果该set为空，则访问所有请求
+     */
     protected HashSet<String> allowedDomains = new HashSet<>();
+    /**
+     * 起始请求url，startRequests方法会根据这些url来生成请求对象，然后开始爬取
+     */
     protected HashSet<String> startUrls = new HashSet<>();
+    private BasicEngine engine;
+
+    /**
+     * 默认从配置文件中加载所有爬虫类，启动爬虫
+     */
+    public static void start() {
+        new Engine().start();
+    }
+
+    /**
+     * 加载指定的爬虫类来启动爬虫
+     *
+     * @param clazz 爬虫类对象
+     */
+    public static void start(Class<? extends Spider> clazz) {
+        new Engine(clazz).start();
+    }
 
     /**
      * 生成起始请求
@@ -30,13 +58,13 @@ public abstract class Spider {
     protected LinkedList<Request> startRequests() {
         LinkedList<Request> requests = new LinkedList<>();
         for (String url : startUrls) {
-            requests.add(Request.builder(url).callback(startUrlsCallback()).build());
+            requests.add(Request.builder(url, this).callback(startUrlsCallback()).build());
         }
         return requests;
     }
 
     /**
-     * 起始请求的默认回调函数
+     * 返回起始请求的默认回调函数，默认为this::parse
      * 如果需要改变，重写此方法
      * @return  指定的回调函数
      */
@@ -51,16 +79,23 @@ public abstract class Spider {
      * @param response  响应内容
      * @return
      */
-    public Object parse(Response response) {
+    public abstract Object parse(Response response);
 
-        return null;
-    }
-
-    protected static void start(Class<? extends Spider> clazz){
-        new Engine(clazz).start();
-    }
-
-    public void setEngine(Engine engine) {
+    public void setEngine(BasicEngine engine) {
         this.engine = engine;
+    }
+
+    /**
+     * 让pipeline处理Item对象，可以进行持久化
+     *
+     * @param item
+     */
+    protected void process(Item item) {
+        engine.pipelineManager.processItem(item);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + name + ":" + getClass().getName() + "]";
     }
 }

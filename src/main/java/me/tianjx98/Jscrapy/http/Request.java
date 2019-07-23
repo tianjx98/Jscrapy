@@ -1,9 +1,6 @@
 package me.tianjx98.Jscrapy.http;
 
-import com.typesafe.config.ConfigObject;
-import com.typesafe.config.ConfigValue;
-import me.tianjx98.Jscrapy.http.client.AsyncHttpClient;
-import me.tianjx98.Jscrapy.utils.Setting;
+import me.tianjx98.Jscrapy.core.Spider;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -11,7 +8,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +23,11 @@ import java.util.function.Function;
 
 public class Request {
     private static Logger logger = LoggerFactory.getLogger(Request.class);
+
+    /**
+     * 发出该请求的爬虫
+     */
+    private Spider spider;
     /**
      * 请求url
      */
@@ -54,11 +55,7 @@ public class Request {
 
     private Request() {
         headers = new ArrayList<>();
-        // 从配置文件中读取默认的请求头
-        ConfigObject defaultHeaders = Setting.settings.getObject("defaultHeaders");
-        for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
-            headers.add(new BasicHeader(entry.getKey(), entry.getValue().unwrapped().toString()));
-        }
+
     }
 
     private Request(URL url) {
@@ -66,8 +63,9 @@ public class Request {
         this.url = url;
     }
 
-    private Request(URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, Object> callback, Function<Response, Object> errback, boolean doFilter) {
+    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, Object> callback, Function<Response, Object> errback, boolean doFilter) {
         this();
+        this.spider = spider;
         this.url = url;
         if (headers != null) {
             this.headers.addAll(headers);
@@ -78,26 +76,30 @@ public class Request {
         this.doFilter = doFilter;
     }
 
+    public static Builder builder(String url, Spider spider) {
+        return new Builder(url, spider);
+    }
+
+    public static Builder builder(URL url, Spider spider) {
+        return new Builder(url, spider);
+    }
+
+    @Override
+    public int hashCode() {
+        return url.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Request)) return false;
+        Request o = (Request) obj;
+        return url.equals(o.url);
+    }
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("[url=");
-        sb.append(url.toString());
-        sb.append(", headers=");
-        sb.append(headers);
-        sb.append(", bodies=");
-        sb.append(requestBodies);
-        sb.append("]");
-        return sb.toString();
-    }
-
-    public static Builder builder(String url) {
-        return new Builder(url);
-    }
-
-    public static Builder builder(URL url) {
-        return new Builder(url);
+        return "[url=" + url + ", headers=" + headers + ", bodies=" + requestBodies + "]";
     }
 
     /**
@@ -124,7 +126,8 @@ public class Request {
 
     /**
      * 获取请求url
-     * @return  请求URL对象
+     *
+     * @return 请求URL对象
      */
     public URL getUrl() {
         return url;
@@ -132,7 +135,8 @@ public class Request {
 
     /**
      * 获取请求域名
-     * @return  域名字符串
+     *
+     * @return 域名字符串
      */
     public String getDomain() {
         return url.getHost();
@@ -141,7 +145,8 @@ public class Request {
     /**
      * 根据请求对象生成GET或POST请求对象
      * 如果生成请求过程中产生异常，将返回null
-     * @return  请求对象
+     *
+     * @return 请求对象
      */
     public HttpRequestBase getRequest() {
         if (requestBodies == null) {
@@ -167,19 +172,39 @@ public class Request {
         return null;
     }
 
+    /**
+     * 获取所有的请求头
+     *
+     * @return
+     */
     public List<Header> getHeaders() {
         return headers;
     }
 
+    /**
+     * 获取所有的请求体
+     *
+     * @return
+     */
     public List<BasicNameValuePair> getRequestBodies() {
         return requestBodies;
     }
 
+    /**
+     * 是否过滤请求，如果过滤，之前访问过的请求就不会再次访问
+     *
+     * @return
+     */
     public boolean isDoFilter() {
         return doFilter;
     }
 
+    public Spider getSpider() {
+        return spider;
+    }
+
     public static class Builder {
+        private Spider spider;
         private URL url;
 
         private List<Header> requestHeaders;
@@ -188,16 +213,19 @@ public class Request {
         private Function<Response, Object> errback;
         private boolean doFilter = true;
 
-        private Builder(String url) {
+        private Builder(String url, Spider spider) {
             try {
                 this.url = new URL(url);
+                this.spider = spider;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                this.url = null;
             }
         }
 
-        private Builder(URL url) {
+        private Builder(URL url, Spider spider) {
             this.url = url;
+            this.spider = spider;
         }
 
         public Builder addHeader(String name, String value) {
@@ -213,7 +241,7 @@ public class Request {
             return this;
         }
 
-        public Builder addBodies(Map<String, String> bodiesMap){
+        public Builder addBodies(Map<String, String> bodiesMap) {
             if (requestBodies == null) {
                 requestBodies = new LinkedList<>();
             }
@@ -239,7 +267,8 @@ public class Request {
         }
 
         public Request build() {
-            return new Request(url, requestHeaders, requestBodies, callback, errback, doFilter);
+            if (url == null) return null;
+            return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter);
         }
     }
 

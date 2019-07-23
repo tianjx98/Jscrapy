@@ -11,7 +11,7 @@
         <!-- encoder 默认配置为PatternLayoutEncoder -->
         <!--定义控制台输出格式-->
         <encoder>
-            <pattern>%d [%thread] %highlight(%-5level) %logger{36} [line : %line] = %msg%n</pattern>
+            <pattern>%d %highlight(%-5level) %logger{36} [line:%line] %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -36,7 +36,8 @@
         </triggeringPolicy>
         <!--定义输出格式-->
         <encoder>
-            <pattern>%d [%thread] %-5level %logger{36} [line : %line] = %msg%n</pattern>
+            <!--[%thread]-->
+            <pattern>%d %-5level %logger{36} [line : %line] : %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -44,7 +45,7 @@
     <root level="TRACE">
         <!--定义了两个appender，日志会通过往这两个appender里面写-->
         <appender-ref ref="stdout"/>
-        <appender-ref ref="file"/>
+        <!--        <appender-ref ref="file"/>-->
     </root>
 
 </configuration>

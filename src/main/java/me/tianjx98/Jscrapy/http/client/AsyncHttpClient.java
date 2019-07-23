@@ -1,9 +1,7 @@
 package me.tianjx98.Jscrapy.http.client;
 
 
-import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -17,6 +15,7 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
@@ -32,24 +31,36 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/**
+ * 异步请求客户端，发送请求后不会阻塞，而是等收到响应后自动调用回调函数来处理响应
+ */
 public class AsyncHttpClient {
     private static Logger logger = LoggerFactory.getLogger(AsyncHttpClient.class);
     private CloseableHttpAsyncClient client = null;
 
-    public AsyncHttpClient(){
+    /**
+     * 默认请求客户端，可以自动管理cookies
+     */
+    public AsyncHttpClient() {
+        this(null, null);
+    }
+
+    /**
+     * 给请求客户端添加代理和默认请求头，可以自动管理cookies
+     *
+     * @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
+     * @param defaultHeaders 默认请求头，发送每一个请求时，都会添加该默认请求头，可以为空
+     */
+    public AsyncHttpClient(HttpHost host, Collection<? extends Header> defaultHeaders) {
         try {
-            creatClient();
+            creatClient(host, defaultHeaders);
             logger.trace("创建异步请求客户端");
-        } catch (IOReactorException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (IOReactorException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
     }
@@ -144,15 +155,13 @@ public class AsyncHttpClient {
     /**
      * 创建请求客户端
      *
+     * @param host
+     * @param defaultHeaders
      * @throws IOReactorException
-     * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    private void creatClient() throws IOReactorException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        Config proxy = Setting.settings.getObject("proxy").toConfig();
-        HttpHost host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
-
+    private void creatClient(HttpHost host, Collection<? extends Header> defaultHeaders) throws IOReactorException, NoSuchAlgorithmException, KeyManagementException {
         // 设置协议http和https对应的处理socket链接工厂的对象
         Registry<SchemeIOSessionStrategy> sessionStrategyRegistry = RegistryBuilder
                 .<SchemeIOSessionStrategy>create()
@@ -165,13 +174,18 @@ public class AsyncHttpClient {
                 .setIoThreadCount(Runtime.getRuntime().availableProcessors())
                 .build();
         PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(new DefaultConnectingIOReactor(ioReactorConfig), sessionStrategyRegistry);
-        client = HttpAsyncClients
+        HttpAsyncClientBuilder builder = HttpAsyncClients
                 .custom()
                 .setConnectionManager(conMgr)
-                .setProxy(host) //设置Shadowsocks代理
                 .setDefaultIOReactorConfig(ioReactorConfig)
-                .setDefaultCookieStore(new BasicCookieStore())
-                .build();
+                .setDefaultCookieStore(new BasicCookieStore());
+        if (host != null) {
+            builder.setProxy(host);//设置代理(Shadowsocks)
+        }
+        if (defaultHeaders == null) {
+            builder.setDefaultHeaders(defaultHeaders);
+        }
+        client = builder.build();
         client.start();
 
     }

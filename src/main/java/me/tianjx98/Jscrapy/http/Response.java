@@ -4,7 +4,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,11 @@ public class Response {
      */
     private Document document;
 
-    public Response(){}
+    public Response() {
+    }
+
     public Response(Request request, HttpResponse response) {
-        this.request=request;
+        this.request = request;
         this.response = response;
         try {
             content = EntityUtils.toString(response.getEntity());
@@ -48,12 +49,12 @@ public class Response {
      * 可以直接使用谷歌浏览器的控制台中，复制标签的css选择语法
      * 例子
      * <div id="content">
-     *      <div class="others"></div>
-     *      <div class="news-content">
-     *          <a href="#">第一个</a>
-     *          <a target="_blank">第二个</a>
-     *          <a target="_blank">第三个</a>
-     *      </div>
+     * <div class="others"></div>
+     * <div class="news-content">
+     * <a href="#">第一个</a>
+     * <a target="_blank">第二个</a>
+     * <a target="_blank">第三个</a>
+     * </div>
      * </div>
      * div#content div.news-content a[target]   选择第二个、第三个a标签
      * div#content div.news-content a[target]:eq(2)   只选择第三个a标签，因为:eq(2)限定了只选择相对他父标签下索引为2的元素
@@ -86,7 +87,7 @@ public class Response {
      * :eq(n): 查找哪些元素的同级索引值与n相等，比如：form input:eq(1)表示包含一个input标签的Form元素
      * :has(seletor): 查找匹配选择器包含元素的元素，比如：div:has(p)表示哪些div包含了p元素
      * :not(selector): 查找与选择器不匹配的元素，比如： div:not(.logo) 表示不包含 class=logo 元素的所有 div 列表
-     * :contains(text): 查找包含给定文本的元素，搜索不区分大不写，比如： p:contains(jsoup)
+     * :isDuplicate(text): 查找包含给定文本的元素，搜索不区分大不写，比如： p:isDuplicate(jsoup)
      * :containsOwn(text): 查找直接包含给定文本的元素
      * :matches(regex): 查找哪些元素的文本匹配指定的正则表达式，比如：div:matches((?i)login)
      * :matchesOwn(regex): 查找自身包含文本匹配指定正则表达式的元素
@@ -103,12 +104,13 @@ public class Response {
 
     /**
      * 根据当前响应结合相对路径形成新的请求
-     * @param relativePath  相对路径
+     *
+     * @param relativePath 相对路径
      * @return
      */
     public Request.Builder follow(String relativePath) {
         try {
-            return Request.builder(new URL(request.getUrl(), relativePath))
+            return Request.builder(new URL(request.getUrl(), relativePath), request.getSpider())
                     .addHeader("ref", request.getUrl().toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
