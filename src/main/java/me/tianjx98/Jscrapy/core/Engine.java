@@ -67,6 +67,7 @@ public class Engine extends BasicEngine {
 
     }
 
+
     /**
      * 爬虫的回调类，收到响应后会调用该类里面的回调函数
      */
@@ -90,19 +91,10 @@ public class Engine extends BasicEngine {
          */
         @Override
         public void completed(HttpResponse result) {
-            //
             engine.crawling.remove(request);
             // 调用请求类里面的回调函数，返回值可能为一个Request对象，也可能是一个Request对象数组
             Object req = request.callback(new Response(request, result));
-            if (req instanceof Request) {
-                engine.scheduler.addRequest((Request) req);
-            }
-            if (req instanceof Request[]) {
-                Request[] reqs = (Request[]) req;
-                for (Request r : reqs) {
-                    engine.scheduler.addRequest(r);
-                }
-            }
+            engine.scheduler.addRequest(req, null);
             engine.nextRequest();
         }
 

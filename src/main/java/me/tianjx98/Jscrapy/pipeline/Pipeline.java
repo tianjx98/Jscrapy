@@ -1,10 +1,20 @@
 package me.tianjx98.Jscrapy.pipeline;
 
-public interface Pipeline {
+import me.tianjx98.Jscrapy.core.BasicEngine;
+import me.tianjx98.Jscrapy.core.Spider;
+
+public abstract class Pipeline {
+
+    protected BasicEngine engine;
+
+    public void setEngine(BasicEngine engine) {
+        this.engine = engine;
+    }
+
     /**
      * 爬虫启动之前会调用此函数
      */
-    default void open() {
+    protected void open() {
 
     }
 
@@ -14,12 +24,12 @@ public interface Pipeline {
      * @param item 要处理的item
      * @return 如果返回值是Item对象，则该Item会继续交给下一个pipeline处理，如果返回null，则丢弃此Item
      */
-    Item processItem(Item item);
+    protected abstract Item processItem(Item item, Spider spider);
 
     /**
      * 爬虫关闭后调用此函数
      */
-    default void close() {
+    protected void close() {
 
     }
 }

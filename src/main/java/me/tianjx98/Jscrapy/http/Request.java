@@ -15,10 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class Request {
@@ -53,6 +50,9 @@ public class Request {
      */
     private boolean doFilter;
 
+
+    private Map<Object, Object> data;
+
     private Request() {
         headers = new ArrayList<>();
 
@@ -63,7 +63,7 @@ public class Request {
         this.url = url;
     }
 
-    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, Object> callback, Function<Response, Object> errback, boolean doFilter) {
+    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, Object> callback, Function<Response, Object> errback, boolean doFilter, Map<Object, Object> data) {
         this();
         this.spider = spider;
         this.url = url;
@@ -74,6 +74,7 @@ public class Request {
         this.callback = callback;
         this.errback = errback;
         this.doFilter = doFilter;
+        this.data = data;
     }
 
     public static Builder builder(String url, Spider spider) {
@@ -110,7 +111,12 @@ public class Request {
      */
     public Object callback(Response response) {
         if (callback == null) return null;
-        return callback.apply(response);
+        try {
+            return callback.apply(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -203,6 +209,18 @@ public class Request {
         return spider;
     }
 
+    public void setCallback(Function<Response, Object> callback) {
+        this.callback = callback;
+    }
+
+    public void setSpider(Spider spider) {
+        this.spider = spider;
+    }
+
+    public Map<Object, Object> getData() {
+        return data;
+    }
+
     public static class Builder {
         private Spider spider;
         private URL url;
@@ -212,6 +230,7 @@ public class Request {
         private Function<Response, Object> callback;
         private Function<Response, Object> errback;
         private boolean doFilter = true;
+        private Map<Object, Object> data;
 
         private Builder(String url, Spider spider) {
             try {
@@ -229,6 +248,7 @@ public class Request {
         }
 
         public Builder addHeader(String name, String value) {
+            if (requestHeaders == null) requestHeaders = new LinkedList<>();
             requestHeaders.add(new BasicHeader(name, value));
             return this;
         }
@@ -251,6 +271,12 @@ public class Request {
             return this;
         }
 
+        public Builder addData(Object key, Object value) {
+            if (data == null) data = new HashMap<>();
+            data.put(key, value);
+            return this;
+        }
+
         public Builder callback(Function<Response, Object> callback) {
             this.callback = callback;
             return this;
@@ -268,7 +294,7 @@ public class Request {
 
         public Request build() {
             if (url == null) return null;
-            return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter);
+            return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter, data);
         }
     }
 

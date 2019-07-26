@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 负责管理任务、过滤任务、输出任务的调度器，存储、去重任务
@@ -51,6 +53,32 @@ public class Scheduler {
         if (filter.isDuplicate(request)) return;
         if (bfs) queue.addLast(request);
         else queue.addFirst(request);
+    }
+
+    /**
+     * 添加一个新的请求到引擎中
+     *
+     * @param request  添加的请求对象
+     * @param consumer 添加请求对象前要向请求对象执行的操作
+     * @return 添加的请求对象
+     */
+    public void addRequest(Object request, Consumer<Request> consumer) {
+        if (request == null) return;
+        if (request instanceof Request) {
+            Request req = (Request) request;
+            // 添加前执行的操作
+            if (consumer != null) consumer.accept(req);
+            addRequest(req);
+        } else if (request instanceof List) {
+            List requests = (List) request;
+            for (Object r : requests) {
+                if (r instanceof Request) {
+                    Request req = (Request) r;
+                    if (consumer != null) consumer.accept(req);
+                    addRequest(req);
+                }
+            }
+        }
     }
 
     /**

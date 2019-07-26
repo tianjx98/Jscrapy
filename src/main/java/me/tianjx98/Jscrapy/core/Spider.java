@@ -91,7 +91,7 @@ public abstract class Spider {
      * @param item
      */
     protected void process(Item item) {
-        engine.pipelineManager.processItem(item);
+        engine.pipelineManager.processItem(item, this);
     }
 
     @Override

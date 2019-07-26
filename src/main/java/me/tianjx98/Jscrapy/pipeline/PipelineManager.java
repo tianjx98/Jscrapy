@@ -1,5 +1,6 @@
 package me.tianjx98.Jscrapy.pipeline;
 
+import me.tianjx98.Jscrapy.core.Spider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +43,9 @@ public class PipelineManager {
      *
      * @param item
      */
-    public void processItem(Item item) {
+    public void processItem(Item item, Spider spider) {
         for (Pipeline pipeline : pipelines) {
-            Item result = pipeline.processItem(item);
+            Item result = pipeline.processItem(item, spider);
             if (result == null) {
                 LOGGER.warn("Item" + item + "被丢弃");
                 return;

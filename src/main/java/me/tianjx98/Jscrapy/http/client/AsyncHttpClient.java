@@ -47,18 +47,18 @@ public class AsyncHttpClient {
      * 默认请求客户端，可以自动管理cookies
      */
     public AsyncHttpClient() {
-        this(null, null);
+        this(null, null, 10000);
     }
 
     /**
      * 给请求客户端添加代理和默认请求头，可以自动管理cookies
-     *
-     * @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
+     *  @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
      * @param defaultHeaders 默认请求头，发送每一个请求时，都会添加该默认请求头，可以为空
+     * @param connTimeout
      */
-    public AsyncHttpClient(HttpHost host, Collection<? extends Header> defaultHeaders) {
+    public AsyncHttpClient(HttpHost host, Collection<? extends Header> defaultHeaders, int connTimeout) {
         try {
-            creatClient(host, defaultHeaders);
+            creatClient(host, defaultHeaders, connTimeout);
             logger.trace("创建异步请求客户端");
         } catch (IOReactorException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
@@ -157,11 +157,12 @@ public class AsyncHttpClient {
      *
      * @param host
      * @param defaultHeaders
+     * @param connTimeout
      * @throws IOReactorException
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    private void creatClient(HttpHost host, Collection<? extends Header> defaultHeaders) throws IOReactorException, NoSuchAlgorithmException, KeyManagementException {
+    private void creatClient(HttpHost host, Collection<? extends Header> defaultHeaders, int connTimeout) throws IOReactorException, NoSuchAlgorithmException, KeyManagementException {
         // 设置协议http和https对应的处理socket链接工厂的对象
         Registry<SchemeIOSessionStrategy> sessionStrategyRegistry = RegistryBuilder
                 .<SchemeIOSessionStrategy>create()
@@ -172,6 +173,7 @@ public class AsyncHttpClient {
         // 配置io线程
         IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
                 .setIoThreadCount(Runtime.getRuntime().availableProcessors())
+                .setConnectTimeout(connTimeout)
                 .build();
         PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(new DefaultConnectingIOReactor(ioReactorConfig), sessionStrategyRegistry);
         HttpAsyncClientBuilder builder = HttpAsyncClients

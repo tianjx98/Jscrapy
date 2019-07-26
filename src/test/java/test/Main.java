@@ -1,8 +1,5 @@
-package me.tianjx98.Jscrapy.utils;
+package test;
 
-import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.http.client.AsyncHttpClient;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

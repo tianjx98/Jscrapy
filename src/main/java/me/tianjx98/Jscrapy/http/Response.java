@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class Response {
     private static Logger logger = LoggerFactory.getLogger(Response.class);
@@ -37,6 +40,8 @@ public class Response {
     public Response(Request request, HttpResponse response) {
         this.request = request;
         this.response = response;
+        boolean isHtml = response.getFirstHeader("Content-Type").getValue().startsWith("text/html");
+        if (!isHtml) return;
         try {
             content = EntityUtils.toString(response.getEntity());
             this.document = Jsoup.parse(content);
@@ -106,16 +111,40 @@ public class Response {
      * 根据当前响应结合相对路径形成新的请求
      *
      * @param relativePath 相对路径
+     * @param callback
      * @return
      */
-    public Request.Builder follow(String relativePath) {
+    public Request follow(String relativePath, Function<Response, Object> callback) {
         try {
-            return Request.builder(new URL(request.getUrl(), relativePath), request.getSpider())
-                    .addHeader("ref", request.getUrl().toString());
+            String curUrl = request.getUrl().toString();
+            Request.Builder builder = relativePath.startsWith("?") && curUrl.indexOf("?") < 0 ?
+                    // 如果相对路径以?开头，只需要把参数拼接到url后面
+                    Request.builder(curUrl + relativePath, request.getSpider())
+                    //通过URL对象的构造函数来拼接url
+                    : Request.builder(new URL(request.getUrl(), relativePath), request.getSpider());
+            return builder
+                    .addHeader("referer", request.getUrl().toString())
+                    .callback(callback)
+                    .build();
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 根据当前响应结合相对路径形成新的请求
+     *
+     * @param relativePaths 相对路径集合
+     * @param callback      回调函数
+     * @return 返回请求对象
+     */
+    public List<Request> follow(List<String> relativePaths, Function<Response, Object> callback) {
+        ArrayList<Request> requests = new ArrayList<>();
+        for (String url : relativePaths) {
+            requests.add(follow(url, callback));
+        }
+        return requests;
     }
 
     public HttpResponse getResponse() {

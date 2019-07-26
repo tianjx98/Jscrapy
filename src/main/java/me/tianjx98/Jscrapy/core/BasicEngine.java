@@ -34,17 +34,17 @@ public class BasicEngine {
     /**
      * 启动时加载所有爬虫类放到该集合中
      */
-    protected List<Spider> spiders = new LinkedList<>();
+    protected final List<Spider> spiders = new LinkedList<>();
     /**
      * 异步请求客户端
      */
-    protected AsyncHttpClient client = createAsyncHttpClient();
+    protected final AsyncHttpClient client = createAsyncHttpClient();
     /**
      * 调度器
      */
-    protected Scheduler scheduler = createScheduler();
+    protected final Scheduler scheduler = createScheduler();
 
-    protected PipelineManager pipelineManager = createPipelineManager();
+    protected final PipelineManager pipelineManager = createPipelineManager();
 
     /**
      * 默认构造函数，从配置文件中读取所有的爬虫类并生成实例
@@ -57,11 +57,14 @@ public class BasicEngine {
                 Class<Spider> clazz = (Class<Spider>) Class.forName(className);
                 createSpiderFromClass(clazz);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                LOGGER.error("未找到Spider:" + e.getMessage() + ", 请检查配置文件");
             }
         }
     }
 
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
 
     /**
      * 通过爬虫的class对象来创建一个爬虫，调用start()方法开始执行这个爬虫
@@ -111,26 +114,24 @@ public class BasicEngine {
      * @return
      */
     private AsyncHttpClient createAsyncHttpClient() {
-        HttpHost host = null;
         try {
             //获取代理配置，如果配置文件没有则为null
             Config proxy = SETTINGS.getConfig("proxy");
-            host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
-        } catch (ConfigException.Missing e) {
-            e.printStackTrace();
-        }
-        // 从配置文件中读取默认的请求头
-        LinkedList<BasicHeader> headers = null;
-        try {
+            HttpHost host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
             Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
-            headers = new LinkedList<>();
+
+            // 从配置文件中读取默认的请求头
+            LinkedList<BasicHeader> headers = new LinkedList<>();
             for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
                 headers.add(new BasicHeader(entry.getKey(), entry.getValue().unwrapped().toString()));
             }
+            // 获取超时时间
+            int connectionTimeout = SETTINGS.getInt("connectionTimeout");
+            return new AsyncHttpClient(host, headers, connectionTimeout);
         } catch (ConfigException.Missing e) {
             e.printStackTrace();
+            return null;
         }
-        return new AsyncHttpClient(host, headers);
     }
 
     /**
@@ -146,11 +147,12 @@ public class BasicEngine {
             String className = entry.getValue().unwrapped().toString();
             try {
                 Pipeline pipeline = (Pipeline) Class.forName(className).getConstructor().newInstance();
+                pipeline.setEngine(this);
                 pipelineTreeMap.put(Integer.valueOf(entry.getKey()), pipeline);
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                LOGGER.error("未找到Pipeline：" + e.getMessage() + "，请检查配置文件");
+                LOGGER.error("未找到Pipeline:" + e.getMessage() + ", 请检查配置文件");
             }
         }
         return new PipelineManager(pipelineTreeMap);
