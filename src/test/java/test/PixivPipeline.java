@@ -31,8 +31,12 @@ public class PixivPipeline extends Pipeline {
         JSON.setPrettyFormat(true);
         String path = Setting.SETTINGS.getString("storePath");
         try {
-            writer = JSON.getJsonWriter(new FileOutputStream(new File(path + "pixiv.json")));
+            File file = new File(path + "pixiv.json");
+            file.createNewFile();
+            writer = JSON.getJsonWriter(new FileOutputStream(file));
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

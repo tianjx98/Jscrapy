@@ -58,26 +58,15 @@ public class Scheduler {
     /**
      * 添加一个新的请求到引擎中
      *
-     * @param request  添加的请求对象
+     * @param requests  添加的请求对象
      * @param consumer 添加请求对象前要向请求对象执行的操作
      * @return 添加的请求对象
      */
-    public void addRequest(Object request, Consumer<Request> consumer) {
-        if (request == null) return;
-        if (request instanceof Request) {
-            Request req = (Request) request;
-            // 添加前执行的操作
-            if (consumer != null) consumer.accept(req);
-            addRequest(req);
-        } else if (request instanceof List) {
-            List requests = (List) request;
-            for (Object r : requests) {
-                if (r instanceof Request) {
-                    Request req = (Request) r;
-                    if (consumer != null) consumer.accept(req);
-                    addRequest(req);
-                }
-            }
+    public void addRequest(List<Request> requests, Consumer<Request> consumer) {
+        if (requests == null) return;
+        for (Request request : requests) {
+            if (consumer != null) consumer.accept(request);
+            addRequest(request);
         }
     }
 

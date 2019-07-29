@@ -28,7 +28,7 @@ public class PipelineManager {
         for (Map.Entry<Integer, Pipeline> entry : pipelineTreeMap.entrySet()) {
             pipelines.addLast(entry.getValue());
         }
-        LOGGER.info("Pipelines = " + pipelines.toString());
+        LOGGER.info("Pipelines = " + pipelines);
     }
 
     /**

@@ -5,6 +5,8 @@ import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigValue;
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
 import me.tianjx98.Jscrapy.http.client.AsyncHttpClient;
+import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
+import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddlewareManager;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.pipeline.PipelineManager;
 import me.tianjx98.Jscrapy.utils.Setting;
@@ -44,7 +46,12 @@ public class BasicEngine {
      */
     protected final Scheduler scheduler = createScheduler();
 
+    /**
+     * 处理Item的管道，用于存储数据
+     */
     protected final PipelineManager pipelineManager = createPipelineManager();
+
+    protected final SpiderMiddlewareManager spiderMiddlewareManager = createSpiderMiddlewareManager();
 
     /**
      * 默认构造函数，从配置文件中读取所有的爬虫类并生成实例
@@ -114,24 +121,32 @@ public class BasicEngine {
      * @return
      */
     private AsyncHttpClient createAsyncHttpClient() {
-        try {
-            //获取代理配置，如果配置文件没有则为null
-            Config proxy = SETTINGS.getConfig("proxy");
-            HttpHost host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
-            Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
+        HttpHost host = null;
+        LinkedList<BasicHeader> headers = null;
 
-            // 从配置文件中读取默认的请求头
-            LinkedList<BasicHeader> headers = new LinkedList<>();
+        //获取代理配置，如果配置文件没有则为null
+        try {
+            Config proxy = SETTINGS.getConfig("proxy");
+            host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
+        } catch (ConfigException.Missing e) {
+            //LOGGER.error(e.getMessage());
+        }
+
+        // 从配置文件中读取默认的请求头
+        try {
+            Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
+            headers = new LinkedList<>();
             for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
                 headers.add(new BasicHeader(entry.getKey(), entry.getValue().unwrapped().toString()));
             }
-            // 获取超时时间
-            int connectionTimeout = SETTINGS.getInt("connectionTimeout");
-            return new AsyncHttpClient(host, headers, connectionTimeout);
         } catch (ConfigException.Missing e) {
-            e.printStackTrace();
-            return null;
+            //e.printStackTrace();
         }
+
+        // 获取超时时间
+        int connectionTimeout = SETTINGS.getInt("connectionTimeout");
+
+        return new AsyncHttpClient(host, headers, connectionTimeout);
     }
 
     /**
@@ -156,5 +171,27 @@ public class BasicEngine {
             }
         }
         return new PipelineManager(pipelineTreeMap);
+    }
+
+    /**
+     * 从配置文件中读取所有的爬虫中间件类名，然后创建对象，生成爬虫中间件管理器
+     * @return  爬虫中间件管理器
+     */
+    private SpiderMiddlewareManager createSpiderMiddlewareManager() {
+        Config spiderMiddlewaresConfig = SETTINGS.getConfig("spiderMiddlewares");
+        TreeMap<Integer, SpiderMiddleware> spiderMiddlewaresTreeMap = new TreeMap<>();
+        for (Map.Entry<String, ConfigValue> entry : spiderMiddlewaresConfig.entrySet()) {
+            String className = entry.getValue().unwrapped().toString();
+            try {
+                SpiderMiddleware spiderMiddleware = (SpiderMiddleware) Class.forName(className).getConstructor().newInstance();
+                spiderMiddleware.setEngine(this);
+                spiderMiddlewaresTreeMap.put(Integer.valueOf(entry.getKey()), spiderMiddleware);
+            } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("未找到SpiderMiddleware:" + e.getMessage() + ", 请检查配置文件");
+            }
+        }
+        return new SpiderMiddlewareManager(spiderMiddlewaresTreeMap);
     }
 }

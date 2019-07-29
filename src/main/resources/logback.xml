@@ -11,7 +11,8 @@
         <!-- encoder 默认配置为PatternLayoutEncoder -->
         <!--定义控制台输出格式-->
         <encoder>
-            <pattern>%d %highlight(%-5level) %logger{36} [line:%line] %msg%n</pattern>
+<!--            %d [%thread] -->
+            <pattern>%highlight(%-5level) %logger{36} [line:%line] %msg%n</pattern>
         </encoder>
     </appender>
 

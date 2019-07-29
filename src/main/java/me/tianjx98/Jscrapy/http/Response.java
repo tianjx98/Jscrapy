@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Response {
-    private static Logger logger = LoggerFactory.getLogger(Response.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(Response.class);
     /**
      * 请求类，包含请求url，请求头，实体内容等信息
      */
@@ -34,17 +34,25 @@ public class Response {
      */
     private Document document;
 
+    private boolean isHtml = false;
+
     public Response() {
     }
 
     public Response(Request request, HttpResponse response) {
         this.request = request;
         this.response = response;
-        boolean isHtml = response.getFirstHeader("Content-Type").getValue().startsWith("text/html");
-        if (!isHtml) return;
+        String contentType = response.getFirstHeader("Content-Type").getValue();
+        isHtml = contentType.startsWith("text/html");
         try {
-            content = EntityUtils.toString(response.getEntity());
-            this.document = Jsoup.parse(content);
+            // 如果是文本类型就将文本保存在String里面
+            if (contentType.startsWith("text")) {
+                content = EntityUtils.toString(response.getEntity());
+            }
+            // 如果是html文档就解析
+            if (isHtml) {
+                this.document = Jsoup.parse(content);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,9 +108,12 @@ public class Response {
      * 可以查看Selector API参考来了解更详细的内容
      *
      * @param cssQuery css查询表达式
-     * @return 返回被选择的元素
+     * @return 返回被选择的元素，如果响应类型不是html，则返回null
      */
     public Elements select(String cssQuery) {
+        if (!isHtml) {
+            return null;
+        }
         Elements select = document.select(cssQuery);
         return select;
     }
@@ -114,7 +125,7 @@ public class Response {
      * @param callback
      * @return
      */
-    public Request follow(String relativePath, Function<Response, Object> callback) {
+    public Request follow(String relativePath, Function<Response, List<Request>> callback) {
         try {
             String curUrl = request.getUrl().toString();
             Request.Builder builder = relativePath.startsWith("?") && curUrl.indexOf("?") < 0 ?
@@ -124,6 +135,7 @@ public class Response {
                     : Request.builder(new URL(request.getUrl(), relativePath), request.getSpider());
             return builder
                     .addHeader("referer", request.getUrl().toString())
+                    .addData("depth", (int)request.getData("depth")+1)
                     .callback(callback)
                     .build();
         } catch (MalformedURLException e) {
@@ -139,7 +151,7 @@ public class Response {
      * @param callback      回调函数
      * @return 返回请求对象
      */
-    public List<Request> follow(List<String> relativePaths, Function<Response, Object> callback) {
+    public List<Request> follow(List<String> relativePaths, Function<Response, List<Request>> callback) {
         ArrayList<Request> requests = new ArrayList<>();
         for (String url : relativePaths) {
             requests.add(follow(url, callback));

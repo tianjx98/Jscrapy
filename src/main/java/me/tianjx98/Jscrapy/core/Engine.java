@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * 核心引擎，负责控制和调度各个组件，保证数据流转
@@ -34,7 +35,7 @@ public class Engine extends BasicEngine {
     /**
      * 调用爬虫类里面的startRequests方法来生成初始请求，启动爬虫
      */
-    protected void start() {
+    void start() {
         // 生成初始请求
         for (Spider spider : spiders) {
             for (Request request : spider.startRequests()) {
@@ -42,8 +43,15 @@ public class Engine extends BasicEngine {
             }
         }
         LOGGER.info("Spiders : " + spiders);
-        // 初始化pipeline
-        pipelineManager.openPipelines();
+
+        try {
+            // 初始化pipeline
+            pipelineManager.openPipelines();
+            // 初始化爬虫中间件
+            spiderMiddlewareManager.openSpiderMiddlewares();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         nextRequest();
     }
 
@@ -61,26 +69,23 @@ public class Engine extends BasicEngine {
                 //将请求加到正在爬取的集合
                 crawling.add(request);
                 // 发送请求
-                client.execute(request.getRequest(), new SpiderCallback(this, request));
+                client.execute(request.getRequest(), new SpiderCallback(request));
             }
         }
 
-    }
 
+    }
 
     /**
      * 爬虫的回调类，收到响应后会调用该类里面的回调函数
      */
-    static class SpiderCallback implements FutureCallback<HttpResponse> {
-        private final Engine engine;
+    class SpiderCallback implements FutureCallback<HttpResponse> {
         private final Request request;
 
         /**
-         * @param engine  爬虫引擎
          * @param request 请求类
          */
-        SpiderCallback(Engine engine, Request request) {
-            this.engine = engine;
+        SpiderCallback(Request request) {
             this.request = request;
         }
 
@@ -91,21 +96,37 @@ public class Engine extends BasicEngine {
          */
         @Override
         public void completed(HttpResponse result) {
-            engine.crawling.remove(request);
+            // 请求完成后，移除正在爬取的请求
+            crawling.remove(request);
             // 调用请求类里面的回调函数，返回值可能为一个Request对象，也可能是一个Request对象数组
-            Object req = request.callback(new Response(request, result));
-            engine.scheduler.addRequest(req, null);
-            engine.nextRequest();
+            Response response = new Response(request, result);
+            List<Request> requests = null;
+            try {
+                // 爬虫中间件处理传入Spider的响应
+                spiderMiddlewareManager.processInput(response);
+                // 调用Spider的回调函数，返回Spider产生的新的请求
+                requests = request.callback(response);
+                // 爬虫中间件处理Spider产生的新的请求
+                spiderMiddlewareManager.processOutput(response, requests);
+            } catch (Exception e) {
+                spiderMiddlewareManager.processException(response, e);
+            }
+            // 将处理后的请求加到调度器
+            scheduler.addRequest(requests, null);
+            nextRequest();
         }
 
         @Override
         public void failed(Exception ex) {
-
+            // 请求完成后，移除正在爬取的请求
+            crawling.remove(request);
+            LOGGER.error(ex.getMessage());
         }
 
         @Override
         public void cancelled() {
-
+            // 请求完成后，移除正在爬取的请求
+            crawling.remove(request);
         }
     }
 }

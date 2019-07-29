@@ -8,6 +8,7 @@ import me.tianjx98.Jscrapy.utils.Setting;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -68,7 +69,7 @@ public abstract class Spider {
      * 如果需要改变，重写此方法
      * @return  指定的回调函数
      */
-    protected Function<Response, Object> startUrlsCallback() {
+    protected Function<Response, List<Request>> startUrlsCallback() {
         return this::parse;
     }
 
@@ -79,7 +80,7 @@ public abstract class Spider {
      * @param response  响应内容
      * @return
      */
-    public abstract Object parse(Response response);
+    public abstract List<Request> parse(Response response);
 
     public void setEngine(BasicEngine engine) {
         this.engine = engine;

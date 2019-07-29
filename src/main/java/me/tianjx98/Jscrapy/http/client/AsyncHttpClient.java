@@ -40,7 +40,7 @@ import java.util.concurrent.Future;
  * 异步请求客户端，发送请求后不会阻塞，而是等收到响应后自动调用回调函数来处理响应
  */
 public class AsyncHttpClient {
-    private static Logger logger = LoggerFactory.getLogger(AsyncHttpClient.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(AsyncHttpClient.class);
     private CloseableHttpAsyncClient client = null;
 
     /**
@@ -58,8 +58,10 @@ public class AsyncHttpClient {
      */
     public AsyncHttpClient(HttpHost host, Collection<? extends Header> defaultHeaders, int connTimeout) {
         try {
+            LOGGER.info("HOST: " + host);
+            LOGGER.info("DEFAULT_HEADERS: " + defaultHeaders);
             creatClient(host, defaultHeaders, connTimeout);
-            logger.trace("创建异步请求客户端");
+            LOGGER.trace("创建异步请求客户端");
         } catch (IOReactorException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
@@ -87,7 +89,7 @@ public class AsyncHttpClient {
     }
 
     public void execute(HttpRequestBase request, FutureCallback<HttpResponse> callback) {
-        logger.trace(request.toString());
+        LOGGER.trace(request.toString());
         client.execute(request, callback);
     }
 
@@ -199,7 +201,7 @@ public class AsyncHttpClient {
         try {
             if (client != null) {
                 client.close();
-                logger.trace("关闭异步请求客户端");
+                LOGGER.trace("关闭异步请求客户端");
             }
         } catch (IOException e) {
             e.printStackTrace();

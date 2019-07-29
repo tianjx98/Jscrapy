@@ -45,16 +45,11 @@ public class PixivSpider extends Spider {
     }
 
     @Override
-    protected Function<Response, Object> startUrlsCallback() {
+    protected Function<Response, List<Request>> startUrlsCallback() {
         return this::login;
     }
 
     private Pattern pattern = Pattern.compile("\\d+");
-
-    public static void main(String[] args) {
-        LOGGER.info("启动TestSpider");
-        start();
-    }
 
     /**
      * 登陆pixiv
@@ -62,7 +57,7 @@ public class PixivSpider extends Spider {
      * @param response
      * @return
      */
-    private Object login(Response response) {
+    private List<Request> login(Response response) {
         // 可以直接在谷歌浏览器控制台复制某个标签的css选择器语法在这里用
         Elements tag = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
         // 获取登陆页面中一个隐藏的登陆参数
@@ -83,25 +78,27 @@ public class PixivSpider extends Spider {
         return Request.builder(LOGIN_URL, this)
                 .addBodies(params)
                 .callback(this::loginStatus)// 该请求完成之后，会自动调用这个回调函数，参数是响应内容
-                .build();
+                .build()
+                .asList();
     }
 
-    private Object loginStatus(Response response) {
+    private List<Request> loginStatus(Response response) {
         LOGGER.info(response.getContent());
         return Request.builder(FAVORITE_URL, this)//获取收藏页面
                 .callback(this::parseFavPage)
-                .build();
+                .build()
+                .asList();
     }
 
-    private Object parseFavPage(Response response) {
+    private List<Request> parseFavPage(Response response) {
         LOGGER.info("处理收藏页面");
         // 获取所有收藏图片的相对路径
         List<String> hrefs = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > div.display_editable_works > ul > li > a.work._work").eachAttr("href");
         // 生成Request对象
         List<Request> follow = response.follow(hrefs, this::parse);
 
-        List<String> pages = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > nav > div > ul > li > a").eachAttr("href");
-        follow.addAll(response.follow(pages, this::parseFavPage));
+        //List<String> pages = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > nav > div > ul > li > a").eachAttr("href");
+        //follow.addAll(response.follow(pages, this::parseFavPage));
         return follow;
     }
 
@@ -112,7 +109,7 @@ public class PixivSpider extends Spider {
      * @return
      */
     @Override
-    public Object parse(Response response) {
+    public List<Request> parse(Response response) {
         LOGGER.info("解析图片页面");
         String text = response.getContent();
         String pageUrl = response.getRequest().getUrl().toString();
@@ -145,5 +142,10 @@ public class PixivSpider extends Spider {
                 .title(title)
                 .build());
         return null;
+    }
+
+    public static void main(String[] args) {
+        LOGGER.info("启动TestSpider");
+        start();
     }
 }

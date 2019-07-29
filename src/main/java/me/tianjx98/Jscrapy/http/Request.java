@@ -40,7 +40,7 @@ public class Request {
     /**
      * 请求成功时调用此回调函数
      */
-    private Function<Response, Object> callback;
+    private Function<Response, List<Request>> callback;
     /**
      * 请求失败时调用此回调函数
      */
@@ -54,8 +54,6 @@ public class Request {
     private Map<Object, Object> data;
 
     private Request() {
-        headers = new ArrayList<>();
-
     }
 
     private Request(URL url) {
@@ -63,13 +61,11 @@ public class Request {
         this.url = url;
     }
 
-    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, Object> callback, Function<Response, Object> errback, boolean doFilter, Map<Object, Object> data) {
+    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, List<Request>> callback, Function<Response, Object> errback, boolean doFilter, Map<Object, Object> data) {
         this();
         this.spider = spider;
         this.url = url;
-        if (headers != null) {
-            this.headers.addAll(headers);
-        }
+        this.headers = headers;
         this.requestBodies = requestBodies;
         this.callback = callback;
         this.errback = errback;
@@ -109,7 +105,7 @@ public class Request {
      * @param response
      * @return
      */
-    public Object callback(Response response) {
+    public List<Request> callback(Response response) {
         if (callback == null) return null;
         try {
             return callback.apply(response);
@@ -155,7 +151,7 @@ public class Request {
      * @return 请求对象
      */
     public HttpRequestBase getRequest() {
-        if (requestBodies == null) {
+        if (requestBodies.size() == 0) {
             try {
                 HttpGet httpGet = new HttpGet(url.toURI());
                 httpGet.setHeaders(headers.toArray(new Header[headers.size()]));
@@ -209,7 +205,7 @@ public class Request {
         return spider;
     }
 
-    public void setCallback(Function<Response, Object> callback) {
+    public void setCallback(Function<Response, List<Request>> callback) {
         this.callback = callback;
     }
 
@@ -217,20 +213,30 @@ public class Request {
         this.spider = spider;
     }
 
-    public Map<Object, Object> getData() {
+    public Map<Object, Object> getDataMap() {
         return data;
+    }
+
+    public Object getData(String key) {
+        return data.get(key);
+    }
+
+    public List<Request> asList() {
+        ArrayList<Request> list = new ArrayList<>();
+        list.add(this);
+        return list;
     }
 
     public static class Builder {
         private Spider spider;
         private URL url;
 
-        private List<Header> requestHeaders;
-        private List<BasicNameValuePair> requestBodies;
-        private Function<Response, Object> callback;
+        private List<Header> requestHeaders = new LinkedList<>();
+        private List<BasicNameValuePair> requestBodies = new LinkedList<>();
+        private Function<Response, List<Request>> callback;
         private Function<Response, Object> errback;
         private boolean doFilter = true;
-        private Map<Object, Object> data;
+        private Map<Object, Object> data = new HashMap<>();
 
         private Builder(String url, Spider spider) {
             try {
@@ -248,23 +254,16 @@ public class Request {
         }
 
         public Builder addHeader(String name, String value) {
-            if (requestHeaders == null) requestHeaders = new LinkedList<>();
             requestHeaders.add(new BasicHeader(name, value));
             return this;
         }
 
         public Builder addBody(String name, String value) {
-            if (requestBodies == null) {
-                requestBodies = new LinkedList<>();
-            }
             requestBodies.add(new BasicNameValuePair(name, value));
             return this;
         }
 
         public Builder addBodies(Map<String, String> bodiesMap) {
-            if (requestBodies == null) {
-                requestBodies = new LinkedList<>();
-            }
             for (Map.Entry<String, String> entry : bodiesMap.entrySet()) {
                 requestBodies.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
@@ -272,12 +271,11 @@ public class Request {
         }
 
         public Builder addData(Object key, Object value) {
-            if (data == null) data = new HashMap<>();
             data.put(key, value);
             return this;
         }
 
-        public Builder callback(Function<Response, Object> callback) {
+        public Builder callback(Function<Response, List<Request>> callback) {
             this.callback = callback;
             return this;
         }

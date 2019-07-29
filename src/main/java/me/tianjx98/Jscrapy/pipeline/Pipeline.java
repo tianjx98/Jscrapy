@@ -32,4 +32,9 @@ public abstract class Pipeline {
     protected void close() {
 
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName();
+    }
 }
