@@ -58,7 +58,7 @@ public class Scheduler {
     /**
      * 添加一个新的请求到引擎中
      *
-     * @param requests  添加的请求对象
+     * @param requests 添加的请求对象
      * @param consumer 添加请求对象前要向请求对象执行的操作
      * @return 添加的请求对象
      */

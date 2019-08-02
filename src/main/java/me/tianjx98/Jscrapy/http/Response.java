@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Response {
@@ -118,6 +119,23 @@ public class Response {
         return select;
     }
 
+    private Request.Builder followRequestBuilder(String relativePath, Function<Response, List<Request>> callback) {
+        try {
+            String curUrl = request.getUrl().toString();
+            Request.Builder builder = relativePath.startsWith("?") && !curUrl.contains("?") ?
+                    // 如果相对路径以?开头，只需要把参数拼接到url后面
+                    Request.builder(curUrl + relativePath, request.getSpider())
+                    //通过URL对象的构造函数来拼接url
+                    : Request.builder(new URL(request.getUrl(), relativePath), request.getSpider());
+            return builder
+                    .addHeader("referer", request.getUrl().toString())
+                    .callback(callback);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * 根据当前响应结合相对路径形成新的请求
      *
@@ -125,23 +143,38 @@ public class Response {
      * @param callback
      * @return
      */
-    public Request follow(String relativePath, Function<Response, List<Request>> callback) {
-        try {
-            String curUrl = request.getUrl().toString();
-            Request.Builder builder = relativePath.startsWith("?") && curUrl.indexOf("?") < 0 ?
-                    // 如果相对路径以?开头，只需要把参数拼接到url后面
-                    Request.builder(curUrl + relativePath, request.getSpider())
-                    //通过URL对象的构造函数来拼接url
-                    : Request.builder(new URL(request.getUrl(), relativePath), request.getSpider());
-            return builder
-                    .addHeader("referer", request.getUrl().toString())
-                    .addData("depth", (int)request.getData("depth")+1)
-                    .callback(callback)
-                    .build();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
+    public List<Request> follow(String relativePath, Function<Response, List<Request>> callback) {
+        return followRequestBuilder(relativePath, callback).build().asList();
+    }
+
+    /**
+     * 根据当前响应结合相对路径形成新的请求
+     *
+     * @param relativePath 相对路径
+     * @param consumer     可以在形成请求前对请求设定回调函数等值
+     * @return 返回请求的集合
+     */
+    public List<Request> follow(String relativePath, Consumer<Request.Builder> consumer) {
+        Request.Builder builder = followRequestBuilder(relativePath, null);
+        consumer.accept(builder);
+        return builder.build().asList();
+    }
+
+    /**
+     * 根据当前响应结合相对路径形成新的请求
+     *
+     * @param relativePaths 相对路径集合
+     * @param consumer      可以在形成请求前对请求设定回调函数等值
+     * @return 返回请求对象的集合
+     */
+    public List<Request> follow(List<String> relativePaths, Consumer<Request.Builder> consumer) {
+        ArrayList<Request> requests = new ArrayList<>();
+        for (String url : relativePaths) {
+            Request.Builder builder = followRequestBuilder(url, null);
+            consumer.accept(builder);
+            requests.add(builder.build());
         }
+        return requests;
     }
 
     /**
@@ -154,10 +187,11 @@ public class Response {
     public List<Request> follow(List<String> relativePaths, Function<Response, List<Request>> callback) {
         ArrayList<Request> requests = new ArrayList<>();
         for (String url : relativePaths) {
-            requests.add(follow(url, callback));
+            requests.add(followRequestBuilder(url, callback).build());
         }
         return requests;
     }
+
 
     public HttpResponse getResponse() {
         return response;

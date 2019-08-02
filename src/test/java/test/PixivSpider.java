@@ -63,8 +63,8 @@ public class PixivSpider extends Spider {
         // 获取登陆页面中一个隐藏的登陆参数
         String postKey = tag.attr("value");
         // 获取配置文件里面的用户名和密码
-        String username = settings.getString("username");
-        String password = settings.getString("password");
+        String username = SETTINGS.getString("username");
+        String password = SETTINGS.getString("password");
         HashMap<String, String> params = new HashMap<>();
         params.put("captcha", "");//添加参数
         params.put("g_recaptcha_response", "");

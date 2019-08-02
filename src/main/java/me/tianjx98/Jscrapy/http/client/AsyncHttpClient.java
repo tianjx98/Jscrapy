@@ -6,6 +6,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -180,6 +183,7 @@ public class AsyncHttpClient {
         PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(new DefaultConnectingIOReactor(ioReactorConfig), sessionStrategyRegistry);
         HttpAsyncClientBuilder builder = HttpAsyncClients
                 .custom()
+                .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                 .setConnectionManager(conMgr)
                 .setDefaultIOReactorConfig(ioReactorConfig)
                 .setDefaultCookieStore(new BasicCookieStore());

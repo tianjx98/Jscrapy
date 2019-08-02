@@ -74,7 +74,8 @@ public class Request {
     }
 
     public static Builder builder(String url, Spider spider) {
-        return new Builder(url, spider);
+        return new Builder(Objects.requireNonNull(url, "url"),
+                Objects.requireNonNull(spider, "spider"));
     }
 
     public static Builder builder(URL url, Spider spider) {
@@ -201,6 +202,10 @@ public class Request {
         return doFilter;
     }
 
+    public void setDoFilter(boolean doFilter) {
+        this.doFilter = doFilter;
+    }
+
     public Spider getSpider() {
         return spider;
     }
@@ -219,6 +224,10 @@ public class Request {
 
     public Object getData(String key) {
         return data.get(key);
+    }
+
+    public void addData(Object key, Object value) {
+        data.put(key, value);
     }
 
     public List<Request> asList() {
@@ -292,6 +301,8 @@ public class Request {
 
         public Request build() {
             if (url == null) return null;
+            Objects.requireNonNull(url, "url");
+            Objects.requireNonNull(callback, "callback");
             return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter, data);
         }
     }

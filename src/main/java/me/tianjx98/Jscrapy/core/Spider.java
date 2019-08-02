@@ -13,14 +13,14 @@ import java.util.function.Function;
 
 /**
  * 用户自己编写的爬虫脚本，可自定义抓取意图
+ *
  * @ClassName Spider
- * @Description TODO
  * @Author tian
  * @Date 2019/7/20 9:14
  * @Version 1.0
  */
 public abstract class Spider {
-    protected static final Config settings = Setting.SETTINGS;
+    protected static final Config SETTINGS = Setting.SETTINGS;
     /**
      * 爬虫的名称
      */
@@ -34,6 +34,9 @@ public abstract class Spider {
      * 起始请求url，startRequests方法会根据这些url来生成请求对象，然后开始爬取
      */
     protected HashSet<String> startUrls = new HashSet<>();
+    /**
+     * 爬虫引擎对象
+     */
     private BasicEngine engine;
 
     /**
@@ -54,9 +57,10 @@ public abstract class Spider {
 
     /**
      * 生成起始请求
-     * @return  返回一个List，里面包含了所有起始请求，请求url来自startUrls
+     *
+     * @return 返回一个List，里面包含了所有起始请求，请求url来自startUrls
      */
-    protected LinkedList<Request> startRequests() {
+    protected List<Request> startRequests() {
         LinkedList<Request> requests = new LinkedList<>();
         for (String url : startUrls) {
             requests.add(Request.builder(url, this).callback(startUrlsCallback()).build());
@@ -66,8 +70,9 @@ public abstract class Spider {
 
     /**
      * 返回起始请求的默认回调函数，默认为this::parse
-     * 如果需要改变，重写此方法
-     * @return  指定的回调函数
+     *
+     * @return 指定的回调函数
+     * @implSpec 在默认的startRequests方法中会调用这个函数为初始请求添加默认的回调函数，如果需要自己为初始请求指定回调函数，可以重写此方法
      */
     protected Function<Response, List<Request>> startUrlsCallback() {
         return this::parse;
@@ -75,10 +80,10 @@ public abstract class Spider {
 
     /**
      * 起始请求默认以此方法为回调方法
-     * 用于析请求，返回值如果为Request或List<Request>类型，会自动将请求添加到队列中继续爬取
+     * 用于析请求，返回值为List<Request>类型，爬虫会自动将这些请求添加到队列中继续爬取
      *
-     * @param response  响应内容
-     * @return
+     * @param response 响应内容
+     * @return 返回请求对象的集合
      */
     public abstract List<Request> parse(Response response);
 
@@ -86,10 +91,14 @@ public abstract class Spider {
         this.engine = engine;
     }
 
+    public HashSet<String> getAllowedDomains() {
+        return allowedDomains;
+    }
+
     /**
-     * 让pipeline处理Item对象，可以进行持久化
+     * 让pipeline依次处理Item对象，可以自己编写pipeline对Item进行存储等操作
      *
-     * @param item
+     * @param item 需要处理的Item对象
      */
     protected void process(Item item) {
         engine.pipelineManager.processItem(item, this);

@@ -5,6 +5,7 @@ import me.tianjx98.Jscrapy.core.BasicEngine;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
+import me.tianjx98.Jscrapy.middleware.spider.impl.DepthSpiderMiddleware;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import java.util.List;
  * @Date 2019-07-28 16:05
  */
 public abstract class SpiderMiddleware {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SpiderMiddleware.class);
     protected BasicEngine engine;
 
     public void setEngine(BasicEngine engine) {
@@ -45,7 +47,7 @@ public abstract class SpiderMiddleware {
      * 处理Spider产生的请求，Spider产生的请求都会按照优先级顺序依次交给每个爬虫中间件处理
      *
      * @param response 当前处理的响应
-     * @param requests   从响应中提取出的结果（Request或Item）
+     * @param requests 从响应中提取出的新的请求
      * @param spider   处理当前响应的Spider
      */
     protected void processSpiderOutput(Response response, List<Request> requests, Spider spider) {
