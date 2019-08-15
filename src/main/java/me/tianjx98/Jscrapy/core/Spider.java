@@ -85,7 +85,9 @@ public abstract class Spider {
      * @param response 响应内容
      * @return 返回请求对象的集合
      */
-    public abstract List<Request> parse(Response response);
+    public List<Request> parse(Response response) {
+        return null;
+    }
 
     public void setEngine(BasicEngine engine) {
         this.engine = engine;

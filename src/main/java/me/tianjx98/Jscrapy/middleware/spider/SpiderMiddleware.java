@@ -1,14 +1,9 @@
 package me.tianjx98.Jscrapy.middleware.spider;
 
-import lombok.extern.java.Log;
 import me.tianjx98.Jscrapy.core.BasicEngine;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.middleware.spider.impl.DepthSpiderMiddleware;
-import me.tianjx98.Jscrapy.pipeline.Item;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -21,7 +16,6 @@ import java.util.List;
  * @Date 2019-07-28 16:05
  */
 public abstract class SpiderMiddleware {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(SpiderMiddleware.class);
     protected BasicEngine engine;
 
     public void setEngine(BasicEngine engine) {

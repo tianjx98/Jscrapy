@@ -7,7 +7,6 @@ import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,10 +19,6 @@ import java.util.List;
  */
 public class Engine extends BasicEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(Engine.class);
-
-    //最大并发数
-    private int MAX_CONCURRENT_NUM = 5;
-    private HashSet<Request> crawling = new HashSet<>(MAX_CONCURRENT_NUM);
 
     Engine() {
     }
@@ -57,20 +52,14 @@ public class Engine extends BasicEngine {
 
     private void nextRequest() {
         //如果正在爬取的列表为空，调度器中也为空，则停止爬取
-        if (scheduler.isEmpty() && crawling.size() == 0) {
-            client.close();
+        if (scheduler.isEmpty() && downloader.isEmpty()) {
+            downloader.close();
             pipelineManager.closePipelines();
         }
         //如果正在爬取的数量小于最大并发数，就向正在爬取的集合里面添加请求
-        while (!scheduler.isEmpty() && crawling.size() < MAX_CONCURRENT_NUM) {
-            if (!scheduler.isEmpty()) {
-                //从调度器取请求
-                Request request = scheduler.nextRequest();
-                //将请求加到正在爬取的集合
-                crawling.add(request);
-                // 发送请求
-                client.execute(request.getRequest(), new SpiderCallback(request));
-            }
+        while (!scheduler.isEmpty() && !downloader.needBlock()) {
+            Request request = scheduler.nextRequest();
+            downloader.download(request, new SpiderCallback(request));
         }
 
 
@@ -97,7 +86,7 @@ public class Engine extends BasicEngine {
         @Override
         public void completed(HttpResponse result) {
             // 请求完成后，移除正在爬取的请求
-            crawling.remove(request);
+            downloader.remove(request);
             // 调用请求类里面的回调函数，返回值可能为一个Request对象，也可能是一个Request对象数组
             Response response = new Response(request, result);
             List<Request> requests = null;
@@ -119,14 +108,16 @@ public class Engine extends BasicEngine {
         @Override
         public void failed(Exception ex) {
             // 请求完成后，移除正在爬取的请求
-            crawling.remove(request);
+            downloader.remove(request);
             LOGGER.error(ex.getMessage());
+            nextRequest();
         }
 
         @Override
         public void cancelled() {
             // 请求完成后，移除正在爬取的请求
-            crawling.remove(request);
+            downloader.remove(request);
+            nextRequest();
         }
     }
 }

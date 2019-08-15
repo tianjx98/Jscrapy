@@ -4,7 +4,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigValue;
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
-import me.tianjx98.Jscrapy.http.client.AsyncHttpClient;
+import me.tianjx98.Jscrapy.http.client.impl.AsyncHttpClient;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddlewareManager;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
@@ -37,10 +37,9 @@ public class BasicEngine {
      * 启动时加载所有爬虫类放到该集合中
      */
     protected final List<Spider> spiders = new LinkedList<>();
-    /**
-     * 异步请求客户端
-     */
-    protected final AsyncHttpClient client = createAsyncHttpClient();
+
+    protected final Downloader downloader = createDownloader();
+
     /**
      * 调度器
      */
@@ -144,9 +143,25 @@ public class BasicEngine {
         }
 
         // 获取超时时间
-        int connectionTimeout = SETTINGS.getInt("connectionTimeout");
+        double connectionTimeout = SETTINGS.getDouble("connectionTimeout");
 
-        return new AsyncHttpClient(host, headers, connectionTimeout);
+        return new AsyncHttpClient(host, headers, (int) (connectionTimeout * 1000));
+    }
+
+    private Downloader createDownloader() {
+        // 获取最大并发数
+        int concurrentRequests = SETTINGS.getInt("concurrentRequests");
+
+        // 获取同一域名下的最大并发数
+        int concurrentRequestsPerDomain = SETTINGS.getInt("concurrentRequestsPerDomain");
+
+        // 获取随机延迟
+        double randomDownloadDelay = SETTINGS.getDouble("randomDownloadDelay");
+
+        return new Downloader(concurrentRequests,
+                concurrentRequestsPerDomain,
+                (int) (randomDownloadDelay * 1000),//将随机延迟转化为毫秒
+                createAsyncHttpClient());
     }
 
     /**
@@ -175,7 +190,8 @@ public class BasicEngine {
 
     /**
      * 从配置文件中读取所有的爬虫中间件类名，然后创建对象，生成爬虫中间件管理器
-     * @return  爬虫中间件管理器
+     *
+     * @return 爬虫中间件管理器
      */
     private SpiderMiddlewareManager createSpiderMiddlewareManager() {
         Config spiderMiddlewaresConfig = SETTINGS.getConfig("spiderMiddlewares");
@@ -194,4 +210,5 @@ public class BasicEngine {
         }
         return new SpiderMiddlewareManager(spiderMiddlewaresTreeMap);
     }
+
 }

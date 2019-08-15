@@ -1,4 +1,4 @@
-package me.tianjx98.Jscrapy.http.client;
+package me.tianjx98.Jscrapy.http.client.impl;
 
 import me.tianjx98.Jscrapy.http.Response;
 import org.apache.http.Header;

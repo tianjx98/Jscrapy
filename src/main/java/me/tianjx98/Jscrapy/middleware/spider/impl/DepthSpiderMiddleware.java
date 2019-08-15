@@ -36,7 +36,9 @@ public class DepthSpiderMiddleware extends SpiderMiddleware {
      */
     @Override
     protected void processSpiderOutput(Response response, List<Request> requests, Spider spider) {
-        LOGGER.info("processSpiderOutput");
+        if (requests == null) {
+            return;
+        }
         // 获取上一个请求
         Map<Object, Object> data = response.getRequest().getDataMap();
         // 如果请求中没有深度，初始化当前请求深度为0

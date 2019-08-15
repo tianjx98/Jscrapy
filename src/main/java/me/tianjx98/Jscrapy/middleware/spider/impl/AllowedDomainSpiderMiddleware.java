@@ -16,6 +16,7 @@ import java.util.List;
  * @Date 2019-08-02 16:33
  */
 public class AllowedDomainSpiderMiddleware extends SpiderMiddleware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllowedDomainSpiderMiddleware.class);
     /**
      * 过滤掉不在允许访问的域名范围内的请求
      *

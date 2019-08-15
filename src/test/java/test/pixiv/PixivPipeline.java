@@ -1,4 +1,4 @@
-package test;
+package test.pixiv;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
 import me.tianjx98.Jscrapy.core.Spider;
@@ -28,7 +28,9 @@ public class PixivPipeline extends Pipeline {
 
     @Override
     public void open() {
+        // 设置json为易读的格式
         JSON.setPrettyFormat(true);
+        // 从配置文件中获取存储路径
         String path = Setting.SETTINGS.getString("storePath");
         try {
             File file = new File(path + "pixiv.json");
@@ -49,6 +51,7 @@ public class PixivPipeline extends Pipeline {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // 返回item交给下一个pipeline处理
         return item;
     }
 

@@ -1,7 +1,8 @@
-package me.tianjx98.Jscrapy.http.client;
+package me.tianjx98.Jscrapy.http.client.impl;
 
 
 import me.tianjx98.Jscrapy.http.Response;
+import me.tianjx98.Jscrapy.http.client.HttpClient;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -15,7 +16,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -42,8 +42,9 @@ import java.util.concurrent.Future;
 /**
  * 异步请求客户端，发送请求后不会阻塞，而是等收到响应后自动调用回调函数来处理响应
  */
-public class AsyncHttpClient {
+public class AsyncHttpClient implements HttpClient {
     private static Logger LOGGER = LoggerFactory.getLogger(AsyncHttpClient.class);
+    private BasicCookieStore cookies = new BasicCookieStore();
     private CloseableHttpAsyncClient client = null;
 
     /**
@@ -55,7 +56,8 @@ public class AsyncHttpClient {
 
     /**
      * 给请求客户端添加代理和默认请求头，可以自动管理cookies
-     *  @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
+     *
+     * @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
      * @param defaultHeaders 默认请求头，发送每一个请求时，都会添加该默认请求头，可以为空
      * @param connTimeout
      */
@@ -93,6 +95,7 @@ public class AsyncHttpClient {
 
     public void execute(HttpRequestBase request, FutureCallback<HttpResponse> callback) {
         LOGGER.trace(request.toString());
+        System.out.println(cookies);
         client.execute(request, callback);
     }
 
@@ -186,7 +189,7 @@ public class AsyncHttpClient {
                 .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                 .setConnectionManager(conMgr)
                 .setDefaultIOReactorConfig(ioReactorConfig)
-                .setDefaultCookieStore(new BasicCookieStore());
+                .setDefaultCookieStore(cookies);
         if (host != null) {
             builder.setProxy(host);//设置代理(Shadowsocks)
         }
@@ -195,7 +198,6 @@ public class AsyncHttpClient {
         }
         client = builder.build();
         client.start();
-
     }
 
     /**

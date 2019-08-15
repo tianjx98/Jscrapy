@@ -1,14 +1,16 @@
-package test;
+package test.pixiv;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.utils.JSON;
+import me.tianjx98.Jscrapy.utils.Out;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -62,6 +64,7 @@ public class PixivSpider extends Spider {
         Elements tag = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
         // 获取登陆页面中一个隐藏的登陆参数
         String postKey = tag.attr("value");
+        String token = response.select("#recaptcha-v3-token").attr("value");
         // 获取配置文件里面的用户名和密码
         String username = SETTINGS.getString("username");
         String password = SETTINGS.getString("password");
@@ -74,6 +77,7 @@ public class PixivSpider extends Spider {
         params.put("source", "pc");
         params.put("ref", "wwwtop_accounts_index");
         params.put("return_to", "https://www.pixiv.net/");
+        params.put("recaptcha-v3-token", token);
         // 生成登陆请求
         return Request.builder(LOGIN_URL, this)
                 .addBodies(params)
@@ -84,20 +88,30 @@ public class PixivSpider extends Spider {
 
     private List<Request> loginStatus(Response response) {
         LOGGER.info(response.getContent());
-        return Request.builder(FAVORITE_URL, this)//获取收藏页面
-                .callback(this::parseFavPage)
+        return Request.builder("https://www.pixiv.net/", this)//获取收藏页面
+                .callback(this::homePage)
                 .build()
                 .asList();
     }
 
+    private List<Request> homePage(Response response) {
+        System.out.println(response.getContent());
+        Out.write(response.getContent(), new File("home.html"));
+        return null;
+    }
+
     private List<Request> parseFavPage(Response response) {
         LOGGER.info("处理收藏页面");
+        System.out.println(response.getContent());
+        Out.write(response.getContent(), new File("fav.html"));
         // 获取所有收藏图片的相对路径
-        List<String> hrefs = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > div.display_editable_works > ul > li > a.work._work").eachAttr("href");
+        Elements atags = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > div.display_editable_works > ul > li > a.work._work");
+        List<String> hrefs = atags.eachAttr("href");
         // 生成Request对象
         List<Request> follow = response.follow(hrefs, this::parse);
 
         //List<String> pages = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > nav > div > ul > li > a").eachAttr("href");
+        //// 收藏页面分页
         //follow.addAll(response.follow(pages, this::parseFavPage));
         return follow;
     }
@@ -145,7 +159,6 @@ public class PixivSpider extends Spider {
     }
 
     public static void main(String[] args) {
-        LOGGER.info("启动TestSpider");
         start();
     }
 }

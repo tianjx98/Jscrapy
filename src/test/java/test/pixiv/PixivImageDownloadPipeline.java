@@ -1,4 +1,4 @@
-package test;
+package test.pixiv;
 
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
@@ -18,6 +18,7 @@ public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
     @Override
     protected List<Request> getImageRequest(Item item, Spider spider) {
         if (item instanceof PixivItem) {
+            // 从item中获取图片url然后生成请求
             PixivItem pixivItem = (PixivItem) item;
             return Request.builder(pixivItem.getImageUrl(), spider)
                     .addHeader("referer", pixivItem.getPageUrl())
