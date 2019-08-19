@@ -20,7 +20,7 @@ public class HashDuplicateFilter implements DuplicateFilter {
     @Override
     public boolean isDuplicate(Request request) {
         String url = request.getUrl().toString();
-        if (request.isDoFilter() && urls.contains(url)) return true;
+        if (urls.contains(url)) return true;
         urls.add(url);
         return false;
     }

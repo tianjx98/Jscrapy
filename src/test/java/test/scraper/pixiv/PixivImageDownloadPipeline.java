@@ -1,4 +1,4 @@
-package test.pixiv;
+package test.scraper.pixiv;
 
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;

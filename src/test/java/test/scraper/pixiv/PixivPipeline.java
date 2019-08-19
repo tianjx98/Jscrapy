@@ -1,4 +1,4 @@
-package test.pixiv;
+package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
 import me.tianjx98.Jscrapy.core.Spider;
@@ -33,7 +33,7 @@ public class PixivPipeline extends Pipeline {
         // 从配置文件中获取存储路径
         String path = Setting.SETTINGS.getString("storePath");
         try {
-            File file = new File(path + "pixiv.json");
+            File file = new File(path + "test.scraper.pixiv.json");
             file.createNewFile();
             writer = JSON.getJsonWriter(new FileOutputStream(file));
         } catch (FileNotFoundException e) {

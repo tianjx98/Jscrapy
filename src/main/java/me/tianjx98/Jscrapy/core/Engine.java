@@ -27,10 +27,13 @@ public class Engine extends BasicEngine {
         super(clazz);
     }
 
+    private long startTime;
+
     /**
      * 调用爬虫类里面的startRequests方法来生成初始请求，启动爬虫
      */
     void start() {
+        startTime = System.currentTimeMillis();
         // 生成初始请求
         for (Spider spider : spiders) {
             for (Request request : spider.startRequests()) {
@@ -55,6 +58,10 @@ public class Engine extends BasicEngine {
         if (scheduler.isEmpty() && downloader.isEmpty()) {
             downloader.close();
             pipelineManager.closePipelines();
+            long seconds = (System.currentTimeMillis() - startTime) / 1000;
+            long minutes = seconds / 60;
+            seconds %= 60;
+            LOGGER.info("总共爬取 " + minutes + " 分 " + seconds + " 秒" + "共发送 " + downloader.getCount() + " 个请求!");
         }
         //如果正在爬取的数量小于最大并发数，就向正在爬取的集合里面添加请求
         while (!scheduler.isEmpty() && !downloader.needBlock()) {
@@ -109,7 +116,8 @@ public class Engine extends BasicEngine {
         public void failed(Exception ex) {
             // 请求完成后，移除正在爬取的请求
             downloader.remove(request);
-            LOGGER.error(ex.getMessage());
+
+            LOGGER.error(ex == null ? null : ex.getMessage());
             nextRequest();
         }
 

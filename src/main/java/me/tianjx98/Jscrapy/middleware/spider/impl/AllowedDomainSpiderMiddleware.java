@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class AllowedDomainSpiderMiddleware extends SpiderMiddleware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AllowedDomainSpiderMiddleware.class);
+
     /**
      * 过滤掉不在允许访问的域名范围内的请求
      *
@@ -26,8 +27,11 @@ public class AllowedDomainSpiderMiddleware extends SpiderMiddleware {
      */
     @Override
     protected void processSpiderOutput(Response response, List<Request> requests, Spider spider) {
+        if (requests == null) {
+            return;
+        }
         HashSet<String> allowedDomains = spider.getAllowedDomains();
-        if (allowedDomains.size() == 0) return;
+        if (spider.getAllowedDomains().size() == 0) return;
         requests.removeIf((request -> {
             boolean isRemove = !allowedDomains.contains(request.getDomain());
             if (isRemove) LOGGER.info("丢弃请求" + request + ", 请求的域名[" + request.getDomain() + "]不在指定范围内");

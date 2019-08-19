@@ -99,8 +99,8 @@ public class Response {
      * @param callback     请求的回调函数
      * @return
      */
-    public List<Request> follow(String relativePath, Function<Response, List<Request>> callback) {
-        return followRequestBuilder(relativePath, callback).build().asList();
+    public Request follow(String relativePath, Function<Response, List<Request>> callback) {
+        return followRequestBuilder(relativePath, callback).build();
     }
 
     /**
@@ -111,11 +111,11 @@ public class Response {
      * @param consumer     可以在形成请求前对请求设定回调函数等值
      * @return 返回请求的集合
      */
-    public List<Request> follow(String relativePath, Consumer<Request.Builder> consumer) {
+    public Request follow(String relativePath, Consumer<Request.Builder> consumer) {
         Objects.requireNonNull(consumer, "consumer");
         Request.Builder builder = followRequestBuilder(relativePath, null);
         consumer.accept(builder);
-        return builder.build().asList();
+        return builder.build();
     }
 
     /**

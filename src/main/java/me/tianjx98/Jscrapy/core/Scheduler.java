@@ -50,7 +50,8 @@ public class Scheduler {
      * @param request
      */
     public void addRequest(Request request) {
-        if (filter.isDuplicate(request)) return;
+        // 如果不需要过滤请求就直接跳过查重
+        if (request.isDoFilter() && filter.isDuplicate(request)) return;
         if (bfs) queue.addLast(request);
         else queue.addFirst(request);
     }

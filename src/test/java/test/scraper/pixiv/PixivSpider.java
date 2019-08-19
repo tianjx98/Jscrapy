@@ -1,4 +1,4 @@
-package test.pixiv;
+package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.tianjx98.Jscrapy.core.Spider;
@@ -18,11 +18,12 @@ import java.util.regex.Pattern;
 
 /**
  * @ClassName PixivSpider
- * @Description TODO
+ * @Description 通过模拟电脑请求登录已经失效
  * @Author tian
  * @Date 2019/7/21 12:14
  * @Version 1.0
  */
+@Deprecated
 public class PixivSpider extends Spider {
     private static final Logger LOGGER = LoggerFactory.getLogger(PixivSpider.class);
     /**
@@ -42,7 +43,7 @@ public class PixivSpider extends Spider {
     private static final String FAVORITE_URL = "https://www.pixiv.net/bookmark.php";
 
     {
-        name = "pixiv";
+        name = "test/scraper/pixiv";
         startUrls.add(LOGIN_PAGE);
     }
 

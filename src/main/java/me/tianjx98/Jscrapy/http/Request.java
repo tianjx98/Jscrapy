@@ -267,6 +267,13 @@ public class Request {
             return this;
         }
 
+        public Builder addHeaders(Map<String, String> headers) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                addHeader(entry.getKey(), entry.getValue());
+            }
+            return this;
+        }
+
         public Builder addBody(String name, String value) {
             requestBodies.add(new BasicNameValuePair(name, value));
             return this;

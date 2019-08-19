@@ -49,6 +49,8 @@ public class Downloader {
 
     private int size = 0;
 
+    private int count = 0;
+
     protected Downloader(int concurrentRequests, int concurrentRequestsPerDomain, int randomDownloadDelay, HttpClient client) {
         this.concurrentRequests = concurrentRequests;
         this.concurrentRequestsPerDomain = concurrentRequestsPerDomain;
@@ -76,6 +78,7 @@ public class Downloader {
     void download(Request request, FutureCallback<HttpResponse> callback) {
         // 将请求添加到请求队列
         this.size++;
+        this.count++;
         String domain = request.getDomain();
         Set<Request> requests = crawling.get(domain);
         if (requests == null) {
@@ -84,7 +87,7 @@ public class Downloader {
         }
         requests.add(request);
         // 发送请求
-        client.execute(request.getRequest(), callback);
+        client.execute(request, callback);
     }
 
     /**
@@ -104,5 +107,9 @@ public class Downloader {
 
     boolean isEmpty() {
         return size == 0;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

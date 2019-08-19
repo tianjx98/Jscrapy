@@ -1,10 +1,7 @@
 package me.tianjx98.Jscrapy.middleware.spider;
 
-import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.pipeline.Item;
-import me.tianjx98.Jscrapy.pipeline.PipelineManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +18,7 @@ import java.util.TreeMap;
  */
 public class SpiderMiddlewareManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpiderMiddlewareManager.class);
-    private LinkedList<SpiderMiddleware> spiderMiddlewares = new LinkedList<>();
+    private List<SpiderMiddleware> spiderMiddlewares = new LinkedList<>();
 
     public SpiderMiddlewareManager(TreeMap<Integer, SpiderMiddleware> spiderMwTreeMap) {
         for (Map.Entry<Integer, SpiderMiddleware> entry : spiderMwTreeMap.entrySet()) {
@@ -54,10 +51,6 @@ public class SpiderMiddlewareManager {
             spiderMiddleware.processSpiderOutput(response, requests, response.getRequest().getSpider());
         }
     }
-
-    //public void processItem(Response response, Item item) {
-    //    spiderMiddlewares.forEach(spiderMiddleware -> spiderMiddleware.processSpiderItem(response, item, response.getRequest().getSpider()));
-    //}
 
     public void processException(Response response, Exception e) {
         spiderMiddlewares.forEach(spiderMiddleware -> spiderMiddleware.processSpiderException(response, e, response.getRequest().getSpider()));

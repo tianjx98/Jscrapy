@@ -44,7 +44,7 @@ public class JSON {
     }
 
     /**
-     * 读取json对象，可以直接统计get方法获取节点数据
+     * 读取json对象，可以直接通过get方法获取节点数据
      *
      * @param jsonString json字符串
      * @return JsonNode对象

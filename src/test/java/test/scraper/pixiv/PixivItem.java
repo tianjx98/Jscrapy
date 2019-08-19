@@ -1,4 +1,4 @@
-package test.pixiv;
+package test.scraper.pixiv;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

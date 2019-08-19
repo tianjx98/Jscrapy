@@ -37,8 +37,13 @@ public class Out {
 
     public static String read(File file) {
         try (FileInputStream in = new FileInputStream(file)) {
-            byte[] bytes = in.readAllBytes();
-            return new String(bytes, "utf-8");
+            byte[] bytes = new byte[2048];
+            int len = 0;
+            StringBuilder sb = new StringBuilder();
+            while ((len = in.read(bytes)) != -1) {
+                sb.append(new String(bytes, 0, len, "utf-8"));
+            }
+            return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

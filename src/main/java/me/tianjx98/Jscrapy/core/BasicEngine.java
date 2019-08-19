@@ -145,7 +145,9 @@ public class BasicEngine {
         // 获取超时时间
         double connectionTimeout = SETTINGS.getDouble("connectionTimeout");
 
-        return new AsyncHttpClient(host, headers, (int) (connectionTimeout * 1000));
+        int maxThreadNum = SETTINGS.getInt("maxThreadNum");
+
+        return new AsyncHttpClient(host, headers, (int) (connectionTimeout * 1000), maxThreadNum);
     }
 
     private Downloader createDownloader() {
