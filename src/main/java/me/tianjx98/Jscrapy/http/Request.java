@@ -309,7 +309,7 @@ public class Request {
         public Request build() {
             if (url == null) return null;
             Objects.requireNonNull(url, "url");
-            Objects.requireNonNull(callback, "callback");
+            //Objects.requireNonNull(callback, "callback");
             return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter, data);
         }
     }

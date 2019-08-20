@@ -43,7 +43,7 @@ public class PixivSpider extends Spider {
     private static final String FAVORITE_URL = "https://www.pixiv.net/bookmark.php";
 
     {
-        name = "test/scraper/pixiv";
+        name = "pixiv";
         startUrls.add(LOGIN_PAGE);
     }
 
@@ -147,10 +147,7 @@ public class PixivSpider extends Spider {
         String title = node.get("illustTitle").textValue();
         process(PixivItem.builder()
                 .favorite(favorite)
-                .upvote(upvote)
-                .comment(comment)
                 .view(view)
-                .pageUrl(pageUrl)
                 .imageUrl(url)
                 .author(author)
                 .pictureId(pictureId)

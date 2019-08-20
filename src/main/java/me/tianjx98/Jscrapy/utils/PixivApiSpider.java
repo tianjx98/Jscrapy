@@ -44,6 +44,11 @@ public class PixivApiSpider extends Spider {
         start(PixivApiSpider.class);
     }
 
+    @Override
+    protected final Function<Response, List<Request>> startUrlsCallback() {
+        return super.startUrlsCallback();
+    }
+
     /**
      * 进行登录操作
      *
@@ -72,15 +77,15 @@ public class PixivApiSpider extends Spider {
     }
 
     private List<Request> login(Response response) {
-        LOGGER.info(response.getContent());
         JsonNode loginResponse = JSON.getJosnNode(response.getContent()).get("response");
         try {
             access_token = "Bearer " + loginResponse.get("access_token").textValue();
             refresh_token = loginResponse.get("refresh_token").textValue();
         } catch (Exception e) {
-            LOGGER.error("test.scraper.pixiv 登录失败");
+            LOGGER.error("pixiv 登录失败");
             return null;
         }
+        LOGGER.info("pixiv 登录成功");
         return parse(null);
     }
 
@@ -92,7 +97,7 @@ public class PixivApiSpider extends Spider {
      * @return
      */
     public Request getUserDetail(String userId, Function<Response, List<Request>> callback) {
-        return makeRequest("/v1/user/illusts?user_id=" + userId + "&filter=" + filter, callback, false);
+        return makeRequest("/v1/user/illusts?user_id=" + userId + "&filter=" + filter, callback);
     }
 
     /**
@@ -103,7 +108,7 @@ public class PixivApiSpider extends Spider {
      * @return
      */
     public Request getUserIllusts(String userId, Function<Response, List<Request>> callback) {
-        return makeRequest("/v1/user/illusts?user_id=" + userId + "&filter=" + filter, callback, false);
+        return makeRequest("/v1/user/illusts?user_id=" + userId + "&filter=" + filter, callback);
     }
 
     /**
@@ -114,7 +119,7 @@ public class PixivApiSpider extends Spider {
      * @return
      */
     public Request getUserBookmarkIllusts(String userId, Function<Response, List<Request>> callback) {
-        return makeRequest("/v1/user/bookmarks/illust?user_id=" + userId + "&filter" + filter, callback, false);
+        return makeRequest("/v1/user/bookmarks/illust?user_id=" + userId + "&filter" + filter + "&restrict=public", callback);
     }
 
     /**
@@ -125,7 +130,7 @@ public class PixivApiSpider extends Spider {
      * @return 返回一个获取图片详细信息的请求对象
      */
     public Request getIllustDetail(String illustId, Function<Response, List<Request>> callback) {
-        return makeRequest("/v1/illust/detail?illust_id=" + illustId, callback, false);
+        return makeRequest("/v1/illust/detail?illust_id=" + illustId, callback);
     }
 
     /**
@@ -136,7 +141,7 @@ public class PixivApiSpider extends Spider {
      * @return
      */
     public Request getIllustRelated(String illustId, Function<Response, List<Request>> callback) {
-        return makeRequest("/v2/illust/related?illust_id=" + illustId + "&filter=" + filter, callback, false);
+        return makeRequest("/v2/illust/related?illust_id=" + illustId + "&filter=" + filter, callback);
     }
 
     /**
@@ -149,7 +154,7 @@ public class PixivApiSpider extends Spider {
      * @return
      */
     public Request getIllustRanking(String mode, String date, Function<Response, List<Request>> callback) {
-        return makeRequest("/v1/illust/ranking?mode=" + (mode == null ? "day" : mode + "&filter=" + filter + (date == null ? "" : "&date=" + date)), callback, false);
+        return makeRequest("/v1/illust/ranking?mode=" + (mode == null ? "day" : mode + "&filter=" + filter + (date == null ? "" : "&date=" + date)), callback);
     }
 
     /**
@@ -168,14 +173,15 @@ public class PixivApiSpider extends Spider {
      */
     public Request searchIllust(String keyWord, String mode, String sortBy, String duration, Function<Response, List<Request>> callback) {
         String url = "/v1/search/illust?word=" + keyWord + "&mode=" + mode + "&sort=" + sortBy + "&filter=" + filter + (duration == null ? "" : "&duration=" + duration);
-        return makeRequest(url, callback, false);
+        return makeRequest(url, callback);
     }
 
 
-    private List<Request> parseWork(Response response) {
-        System.out.println(response.getContent());
-        //JsonNode josnNode = JSON.getJosnNode(response.getContent());
-        return null;
+    protected Request downloadIllust(String url) {
+        return Request.builder(url, this)
+                .addHeaders(defaultHeaders)
+                .addHeader("Authorization", access_token)
+                .build();
     }
 
     /**
@@ -185,11 +191,18 @@ public class PixivApiSpider extends Spider {
      * @param callback     回调函数
      * @return 请求对象
      */
-    private Request makeRequest(String relativePath, Function<Response, List<Request>> callback, boolean needAuth) {
+    private Request makeRequest(String relativePath, Function<Response, List<Request>> callback) {
         Request.Builder builder = Request.builder(api_prefix + relativePath, this)
                 .addHeaders(defaultHeaders)
+                .addHeader("Referer", "http://spapi.pixiv.net/")
                 .callback(callback);
         builder.addHeader("Authorization", access_token);
         return builder.build();
+    }
+
+    private List<Request> parseWork(Response response) {
+        System.out.println(response.getContent());
+        //JsonNode josnNode = JSON.getJosnNode(response.getContent());
+        return null;
     }
 }

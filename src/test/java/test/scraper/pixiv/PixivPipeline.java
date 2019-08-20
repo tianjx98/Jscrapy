@@ -33,7 +33,11 @@ public class PixivPipeline extends Pipeline {
         // 从配置文件中获取存储路径
         String path = Setting.SETTINGS.getString("storePath");
         try {
-            File file = new File(path + "test.scraper.pixiv.json");
+            File file = new File(path + "pixiv.json");
+            File parentFile = file.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
             file.createNewFile();
             writer = JSON.getJsonWriter(new FileOutputStream(file));
         } catch (FileNotFoundException e) {

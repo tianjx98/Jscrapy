@@ -20,11 +20,9 @@ public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
         if (item instanceof PixivItem) {
             // 从item中获取图片url然后生成请求
             PixivItem pixivItem = (PixivItem) item;
-            return Request.builder(pixivItem.getImageUrl(), spider)
-                    .addHeader("referer", pixivItem.getPageUrl())
-                    .addData("filename", pixivItem.getAuthor() + "-" + pixivItem.getTitle())
-                    .build()
-                    .asList();
+            Request request = pixivItem.getRequest();
+            request.addData("filename", pixivItem.getAuthor() + "-" + pixivItem.getTitle());
+            return request.asList();
         }
         return null;
     }
