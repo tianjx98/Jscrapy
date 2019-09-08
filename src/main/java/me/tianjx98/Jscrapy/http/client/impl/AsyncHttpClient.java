@@ -38,7 +38,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -54,22 +57,20 @@ public class AsyncHttpClient implements HttpClient {
      * 默认请求客户端，可以自动管理cookies
      */
     public AsyncHttpClient() {
-        this(null, null, 10000, Runtime.getRuntime().availableProcessors());
+        this(null, 10000, Runtime.getRuntime().availableProcessors());
     }
 
     /**
      * 给请求客户端添加代理和默认请求头，可以自动管理cookies
      *
      * @param host           代理，会通过代理发送请求，如果是需要翻墙才能访问，需要添加代理，可以为空
-     * @param defaultHeaders 默认请求头，发送每一个请求时，都会添加该默认请求头，可以为空
      * @param maxThreadNum   下载请求的最大线程数
      * @param connTimeout    连接超时时间
      */
-    public AsyncHttpClient(HttpHost host, Collection<? extends Header> defaultHeaders, int connTimeout, int maxThreadNum) {
+    public AsyncHttpClient(HttpHost host, int connTimeout, int maxThreadNum) {
         try {
             LOGGER.info("HOST: " + host);
-            LOGGER.info("DEFAULT_HEADERS: " + defaultHeaders);
-            creatClient(host, defaultHeaders, connTimeout, maxThreadNum);
+            creatClient(host, connTimeout, maxThreadNum);
             LOGGER.trace("创建异步请求客户端");
         } catch (IOReactorException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
@@ -167,14 +168,13 @@ public class AsyncHttpClient implements HttpClient {
      * 创建请求客户端
      *
      * @param host
-     * @param defaultHeaders
      * @param connTimeout
      * @param maxThreadNum
      * @throws IOReactorException
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    private void creatClient(HttpHost host, Collection<? extends Header> defaultHeaders, int connTimeout, int maxThreadNum) throws IOReactorException, NoSuchAlgorithmException, KeyManagementException {
+    private void creatClient(HttpHost host, int connTimeout, int maxThreadNum) throws IOReactorException, NoSuchAlgorithmException, KeyManagementException {
         // 设置协议http和https对应的处理socket链接工厂的对象
         Registry<SchemeIOSessionStrategy> sessionStrategyRegistry = RegistryBuilder
                 .<SchemeIOSessionStrategy>create()
@@ -199,9 +199,6 @@ public class AsyncHttpClient implements HttpClient {
                 .setDefaultCookieStore(cookies);
         if (host != null) {
             builder.setProxy(host);//设置代理(Shadowsocks)
-        }
-        if (defaultHeaders == null) {
-            builder.setDefaultHeaders(defaultHeaders);
         }
         client = builder.build();
         client.start();

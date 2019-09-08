@@ -22,10 +22,10 @@ import java.util.function.Function;
 public class NovelSpider extends Spider {
     {
         name = "test/scraper/novel";
-        //startUrls.add("https://m.wukongzhuishu.com/dir/DouPoCangQiong/");
+        startUrls.add("https://m.wukongzhuishu.com/dir/DouPoCangQiong/");
         //startUrls.add("https://m.wukongzhuishu.com/dir/JueShiZhanHun/");
-        startUrls.add("https://m.wukongzhuishu.com/dir/dahuojiyugongzhuqun/");
-        startUrls.add("https://m.wukongzhuishu.com/dir/nvshenlianaiji0kuaichuan0/");
+        //startUrls.add("https://m.wukongzhuishu.com/dir/dahuojiyugongzhuqun/");
+        //startUrls.add("https://m.wukongzhuishu.com/dir/nvshenlianaiji0kuaichuan0/");
         allowedDomains.add("m.wukongzhuishu.com");
     }
 

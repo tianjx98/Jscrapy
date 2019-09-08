@@ -63,7 +63,7 @@ public class Scheduler {
      * @param consumer 添加请求对象前要向请求对象执行的操作
      * @return 添加的请求对象
      */
-    public void addRequest(List<Request> requests, Consumer<Request> consumer) {
+    public synchronized void addRequest(List<Request> requests, Consumer<Request> consumer) {
         if (requests == null) return;
         for (Request request : requests) {
             if (consumer != null) consumer.accept(request);
@@ -76,11 +76,15 @@ public class Scheduler {
      *
      * @return 请求类对象，如果调度器中请求为空，返回null
      */
-    public Request nextRequest() {
+    public synchronized Request nextRequest() {
         return queue.pollFirst();
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return queue.isEmpty();
+    }
+
+    public synchronized int size() {
+        return queue.size();
     }
 }

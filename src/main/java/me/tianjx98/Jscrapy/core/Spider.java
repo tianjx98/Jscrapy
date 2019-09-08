@@ -6,6 +6,7 @@ import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.utils.Setting;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,16 @@ public abstract class Spider {
      * 起始请求url，startRequests方法会根据这些url来生成请求对象，然后开始爬取
      */
     protected HashSet<String> startUrls = new HashSet<>();
+
+    /**
+     * 每一个爬虫类产生的请求对象都会添加该爬虫类的默认请求头
+     */
+    protected HashMap<String, String> defaultHeaders = new HashMap<>();
+
+    public HashMap<String, String> getDefaultHeaders() {
+        return defaultHeaders;
+    }
+
     /**
      * 爬虫引擎对象
      */

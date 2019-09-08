@@ -1,6 +1,9 @@
 package me.tianjx98.Jscrapy.http;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigValue;
 import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -32,7 +35,7 @@ public class Request {
     /**
      * 请求头
      */
-    private List<Header> headers;
+    private Map<String, String> headers;
     /**
      * 请求体，如果请求体不为空，则发送POST请求，否则发送GET请求
      */
@@ -61,7 +64,7 @@ public class Request {
         this.url = url;
     }
 
-    private Request(Spider spider, URL url, List<Header> headers, List<BasicNameValuePair> requestBodies, Function<Response, List<Request>> callback, Function<Response, Object> errback, boolean doFilter, Map<Object, Object> data) {
+    private Request(Spider spider, URL url, Map<String, String> headers, List<BasicNameValuePair> requestBodies, Function<Response, List<Request>> callback, Function<Response, Object> errback, boolean doFilter, Map<Object, Object> data) {
         this();
         this.spider = spider;
         this.url = url;
@@ -74,8 +77,15 @@ public class Request {
     }
 
     public static Builder builder(String url, Spider spider) {
-        return new Builder(Objects.requireNonNull(url, "url"),
-                Objects.requireNonNull(spider, "spider"));
+        Objects.requireNonNull(url, "url");
+        Objects.requireNonNull(spider, "spider");
+        try {
+            URL url1 = new URL(url);
+            return new Builder(url1, spider);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Builder builder(URL url, Spider spider) {
@@ -152,10 +162,15 @@ public class Request {
      * @return 请求对象
      */
     public HttpRequestBase getRequest() {
+        Header[] headers = new Header[this.headers.size()];
+        int i = 0;
+        for (Map.Entry<String, String> entry : this.headers.entrySet()) {
+            headers[i++] = new BasicHeader(entry.getKey(), entry.getValue());
+        }
         if (requestBodies.size() == 0) {
             try {
                 HttpGet httpGet = new HttpGet(url.toURI());
-                httpGet.setHeaders(headers.toArray(new Header[headers.size()]));
+                httpGet.setHeaders(headers);
                 return httpGet;
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -163,7 +178,8 @@ public class Request {
         } else {
             try {
                 HttpPost httpPost = new HttpPost(url.toURI());
-                httpPost.setHeaders(headers.toArray(new Header[headers.size()]));
+                httpPost.setHeaders(headers);
+                BasicNameValuePair[] pairs = new BasicNameValuePair[requestBodies.size()];
                 httpPost.setEntity(new UrlEncodedFormEntity(requestBodies, "UTF-8"));
                 return httpPost;
             } catch (URISyntaxException e) {
@@ -180,7 +196,7 @@ public class Request {
      *
      * @return
      */
-    public List<Header> getHeaders() {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
@@ -240,37 +256,32 @@ public class Request {
         private Spider spider;
         private URL url;
 
-        private List<Header> requestHeaders = new LinkedList<>();
+        private Map<String, String> requestHeaders = new HashMap<>();
         private List<BasicNameValuePair> requestBodies = new LinkedList<>();
         private Function<Response, List<Request>> callback;
         private Function<Response, Object> errback;
         private boolean doFilter = true;
         private Map<Object, Object> data = new HashMap<>();
 
-        private Builder(String url, Spider spider) {
-            try {
-                this.url = new URL(url);
-                this.spider = spider;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                this.url = null;
-            }
-        }
-
         private Builder(URL url, Spider spider) {
             this.url = url;
             this.spider = spider;
+            // 从配置文件中读取默认的请求头
+            Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
+            for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
+                requestHeaders.put(entry.getKey(), entry.getValue().unwrapped().toString());
+            }
+            // 再读取Spider里面的默认请求头, 会覆盖配置文件中的
+            requestHeaders.putAll(spider.getDefaultHeaders());
         }
 
         public Builder addHeader(String name, String value) {
-            requestHeaders.add(new BasicHeader(name, value));
+            requestHeaders.put(name, value);
             return this;
         }
 
         public Builder addHeaders(Map<String, String> headers) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                addHeader(entry.getKey(), entry.getValue());
-            }
+            requestHeaders.putAll(headers);
             return this;
         }
 

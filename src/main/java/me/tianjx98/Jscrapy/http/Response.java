@@ -84,7 +84,7 @@ public class Response {
                     //通过URL对象的构造函数来拼接url
                     : Request.builder(new URL(request.getUrl(), relativePath), request.getSpider());
             return builder
-                    .addHeader("referer", request.getUrl().toString())
+                    .addHeader("Referer", request.getUrl().toString())
                     .callback(callback);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -120,6 +120,21 @@ public class Response {
 
     /**
      * 根据当前响应结合相对路径形成新的请求
+     *
+     * @param relativePaths 相对路径集合
+     * @param callback      回调函数
+     * @return 返回请求对象
+     */
+    public List<Request> follow(List<String> relativePaths, Function<Response, List<Request>> callback) {
+        ArrayList<Request> requests = new ArrayList<>();
+        for (String url : relativePaths) {
+            requests.add(followRequestBuilder(url, callback).build());
+        }
+        return requests;
+    }
+
+    /**
+     * 根据当前响应结合相对路径形成新的请求
      * 需要在Consumer中设置回调函数
      *
      * @param relativePaths 相对路径集合
@@ -133,21 +148,6 @@ public class Response {
             Request.Builder builder = followRequestBuilder(url, null);
             consumer.accept(builder);
             requests.add(builder.build());
-        }
-        return requests;
-    }
-
-    /**
-     * 根据当前响应结合相对路径形成新的请求
-     *
-     * @param relativePaths 相对路径集合
-     * @param callback      回调函数
-     * @return 返回请求对象
-     */
-    public List<Request> follow(List<String> relativePaths, Function<Response, List<Request>> callback) {
-        ArrayList<Request> requests = new ArrayList<>();
-        for (String url : relativePaths) {
-            requests.add(followRequestBuilder(url, callback).build());
         }
         return requests;
     }

@@ -9,6 +9,7 @@ import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddlewareManager;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.pipeline.PipelineManager;
+import me.tianjx98.Jscrapy.utils.Monitor;
 import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
@@ -52,6 +53,8 @@ public class BasicEngine {
 
     protected final SpiderMiddlewareManager spiderMiddlewareManager = createSpiderMiddlewareManager();
 
+    protected final Monitor monitor = new Monitor(this);
+
     /**
      * 默认构造函数，从配置文件中读取所有的爬虫类并生成实例
      */
@@ -68,10 +71,6 @@ public class BasicEngine {
         }
     }
 
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
-
     /**
      * 通过爬虫的class对象来创建一个爬虫，调用start()方法开始执行这个爬虫
      *
@@ -79,6 +78,14 @@ public class BasicEngine {
      */
     BasicEngine(Class<? extends Spider> clazz) {
         createSpiderFromClass(clazz);
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public Downloader getDownloader() {
+        return downloader;
     }
 
     /**
@@ -131,23 +138,12 @@ public class BasicEngine {
             //LOGGER.error(e.getMessage());
         }
 
-        // 从配置文件中读取默认的请求头
-        try {
-            Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
-            headers = new LinkedList<>();
-            for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
-                headers.add(new BasicHeader(entry.getKey(), entry.getValue().unwrapped().toString()));
-            }
-        } catch (ConfigException.Missing e) {
-            //e.printStackTrace();
-        }
-
         // 获取超时时间
         double connectionTimeout = SETTINGS.getDouble("connectionTimeout");
 
         int maxThreadNum = SETTINGS.getInt("maxThreadNum");
 
-        return new AsyncHttpClient(host, headers, (int) (connectionTimeout * 1000), maxThreadNum);
+        return new AsyncHttpClient(host, (int) (connectionTimeout * 1000), maxThreadNum);
     }
 
     private Downloader createDownloader() {

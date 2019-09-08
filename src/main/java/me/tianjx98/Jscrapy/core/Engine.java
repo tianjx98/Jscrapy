@@ -33,6 +33,7 @@ public class Engine extends BasicEngine {
      * 调用爬虫类里面的startRequests方法来生成初始请求，启动爬虫
      */
     void start() {
+        monitor.start();
         startTime = System.currentTimeMillis();
         // 生成初始请求
         for (Spider spider : spiders) {
@@ -53,15 +54,19 @@ public class Engine extends BasicEngine {
         nextRequest();
     }
 
+    private void close() {
+        downloader.close();
+        pipelineManager.closePipelines();
+        long seconds = (System.currentTimeMillis() - startTime) / 1000;
+        long minutes = seconds / 60;
+        seconds %= 60;
+        LOGGER.info("总共爬取 " + minutes + " 分 " + seconds + " 秒" + "共发送 " + downloader.getCount() + " 个请求!");
+    }
+
     private void nextRequest() {
         //如果正在爬取的列表为空，调度器中也为空，则停止爬取
         if (scheduler.isEmpty() && downloader.isEmpty()) {
-            downloader.close();
-            pipelineManager.closePipelines();
-            long seconds = (System.currentTimeMillis() - startTime) / 1000;
-            long minutes = seconds / 60;
-            seconds %= 60;
-            LOGGER.info("总共爬取 " + minutes + " 分 " + seconds + " 秒" + "共发送 " + downloader.getCount() + " 个请求!");
+            close();
         }
         //如果正在爬取的数量小于最大并发数，就向正在爬取的集合里面添加请求
         while (!scheduler.isEmpty() && !downloader.needBlock()) {

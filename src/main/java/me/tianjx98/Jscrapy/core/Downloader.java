@@ -47,8 +47,14 @@ public class Downloader {
 
     private Map<String, Set<Request>> crawling = new HashMap<>();
 
+    /**
+     * 当前下载的请求数
+     */
     private int size = 0;
 
+    /**
+     * 记录发送的请求总数
+     */
     private int count = 0;
 
     protected Downloader(int concurrentRequests, int concurrentRequestsPerDomain, int randomDownloadDelay, HttpClient client) {
@@ -101,15 +107,37 @@ public class Downloader {
         this.size--;
     }
 
-    void close() {
+    /**
+     * 关闭下载器
+     */
+    public void close() {
         client.close();
     }
 
-    boolean isEmpty() {
+    /**
+     * 判断下载器正在下载的请求是否为空
+     *
+     * @return 如果正在下载的请求数量为0就返回true, 否则返回false
+     */
+    public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * 返回已经发出的请求总数
+     *
+     * @return 已经发出的请求数
+     */
     public int getCount() {
         return count;
+    }
+
+    /**
+     * 返回正在请求的请求数量
+     *
+     * @return 在请求的请求数量
+     */
+    public int getSize() {
+        return size;
     }
 }

@@ -1,16 +1,14 @@
-package test.scraper.pixiv;
+package me.tianjx98.Jscrapy.pipeline.impl;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.utils.JSON;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -21,8 +19,8 @@ import java.io.IOException;
  * @Date 2019/7/23 16:32
  * @Version 1.0
  */
-public class PixivPipeline extends Pipeline {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PixivPipeline.class);
+public class JsonWriterPipeline extends Pipeline {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonWriterPipeline.class);
 
     SequenceWriter writer;
 
@@ -30,18 +28,15 @@ public class PixivPipeline extends Pipeline {
     public void open() {
         // 设置json为易读的格式
         JSON.setPrettyFormat(true);
-        // 从配置文件中获取存储路径
-        String path = Setting.SETTINGS.getString("storePath");
         try {
-            File file = new File(path + "pixiv.json");
+            // 写入的文件路径
+            File file = new File(filePath());
             File parentFile = file.getParentFile();
-            if (!parentFile.exists()) {
+            if (parentFile != null && !parentFile.exists()) {
                 parentFile.mkdirs();
             }
             file.createNewFile();
             writer = JSON.getJsonWriter(new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,7 +44,7 @@ public class PixivPipeline extends Pipeline {
 
     @Override
     public Item processItem(Item item, Spider spider) {
-        if (!(item instanceof PixivItem)) return item;
+        if (!isWrite(item)) return item;
         try {
             LOGGER.info(item.toString());
             writer.write(item);
@@ -67,5 +62,25 @@ public class PixivPipeline extends Pipeline {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 判断Item是否写入到Json文件中
+     *
+     * @return 如果是返回true, 否则返回false
+     * @implSpec 这个方法在处理Item时会被调用, 判断该Item是否写入Json文件, 可以自定规则判断Item是否被写入, 默认所有Item都会写入
+     */
+    protected boolean isWrite(Item item) {
+        return true;
+    }
+
+    /**
+     * 生成Json文件的路径
+     *
+     * @return Json文件路径, 可以为相对路径,也可以为绝对路径
+     * @implSpec 必须要重载这个方法, 否则会抛出UnsupportedOperationException异常, 通过这个方法生成文件路径, 然后在open方法中会根据这个路径生成文件写入数据
+     */
+    protected String filePath() {
+        throw new UnsupportedOperationException();
     }
 }
