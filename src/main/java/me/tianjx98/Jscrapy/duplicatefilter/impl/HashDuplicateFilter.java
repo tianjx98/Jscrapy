@@ -9,7 +9,6 @@ import java.util.HashSet;
  * 使用HashSet去重
  *
  * @ClassName HashDuplicateFilter
- * @Description TODO
  * @Author tian
  * @Date 2019/7/21 20:58
  * @Version 1.0

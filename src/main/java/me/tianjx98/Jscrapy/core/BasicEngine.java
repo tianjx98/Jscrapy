@@ -26,7 +26,6 @@ import java.util.TreeMap;
  * 核心引擎父类，主要在启动时通过配置文件初始化异步请求客户端，调度器，加载中间件
  *
  * @ClassName Engine
- * @Description TODO 将所有读取配置文件的过程都放到引擎类中
  * @Author tian
  * @Date 2019/7/20 9:33
  * @Version 1.0
@@ -101,6 +100,7 @@ public class BasicEngine {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        LOGGER.info("DupFilter = " + dupFilter.getClass().getName());
         return new Scheduler(dupFilter, scheduler.getBoolean("bfs"));
     }
 

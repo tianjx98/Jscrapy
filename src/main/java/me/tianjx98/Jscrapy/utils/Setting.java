@@ -12,6 +12,6 @@ import com.typesafe.config.ConfigFactory;
  * @Version 1.0
  */
 public class Setting {
-    // TODO: 读取用户的配置文件来覆盖默认配置文件
-    public static final Config SETTINGS = ConfigFactory.load("settings.conf");
+    public static final Config SETTINGS = ConfigFactory.load("settings.conf")//读取用户配置文件,会覆盖默认配置文件
+            .withFallback(ConfigFactory.load("default-settings.conf"));//读取默认配置文件
 }
