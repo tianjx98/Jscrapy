@@ -24,7 +24,7 @@ public class TestSpider extends Spider {
         // 也可以重载startUrlsCallback()来修改默认的回调函数
         startUrls.add("https://www.baidu.com");
     }
-		// 启动爬虫
+	// 启动爬虫
     public static void main(String[] args) {
       	// 启动单个爬虫
         start(TestSpider.class);
