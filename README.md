@@ -35,7 +35,7 @@ public class TestSpider extends Spider {
 
         // 对于html类型的响应,可以直接通过此方法来获取html标签
         // 获取出来的标签可能有多个
-        Elements elements = response.select("css查询语句");
+        Elements elements = response.css("css查询语句");
       
 				// 如果不需要发出新的响应，可直接返回null，如果所有请求都处理完成，爬虫自动关闭
         // return null;
@@ -49,6 +49,30 @@ public class TestSpider extends Spider {
                 .asList();//将单个Request转换成list
     }
 
+}
+```
+
+## 提取数据
+### 使用css选择器
+```java
+// 对于html类型的响应,可以直接通过此方法来获取html标签
+// 获取出来的标签可能有多个
+Elements elements = response.css("css查询语句");
+// 获取所有标签的href属性
+List<String> href = elements.eachAttr("href");
+// 获取里面的第一个标签
+Element first = elements.first();
+// 获取标签的属性
+String attr = first.attr("attr");
+// 获取标签中的文本信息
+first.text();
+```
+### 使用xpath选择器
+```java
+NodeList list = response.xpath("/html/body/section/div/div[2]/ul/li/a");
+for (int i = 0; i < list.getLength(); i++) {
+    Node item = list.item(i);
+    System.out.println(item.getTextContent());
 }
 ```
 
