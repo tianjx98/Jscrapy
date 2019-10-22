@@ -1,14 +1,14 @@
 # Jscrapy
 
-* [创建爬虫类爬取数 据](#创建爬虫类爬取数 据)
+* [创建爬虫类爬取数据](#创建爬虫类爬取数据)
 * [提取数据](#提取数据)
   + [使用css选择器](#使用css选择器)
   + [使用xpath选择器](#使用xpath选择器)
 * [存储爬取的数据](#存储爬取的数据)
   + [下载图片](#下载图片)
-* [pixiv api 使用](#pixiv api 使用)
+* [pixivApi使用](#pixivApi使用)
 
-## 创建爬虫类爬取数 据
+## 创建爬虫类爬取数据
 
 创建一个类继承`me.tianjx98.Jscrapy.core.Spider`就可以快速创建一个爬虫类
 
@@ -188,7 +188,7 @@ public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
 }
 ```
 
-## pixiv api 使用
+## pixivApi使用
 
 创建一个继承`me.tianjx98.Jscrapy.utils.PixivApiSpider`就可以调用接口来获取信息
 
