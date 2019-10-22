@@ -2,6 +2,8 @@
 
 [TOC]
 
+
+
 ## 创建爬虫类爬取数据
 
 创建一个类继承`me.tianjx98.Jscrapy.core.Spider`就可以快速创建一个爬虫类
@@ -50,7 +52,9 @@ public class TestSpider extends Spider {
 ```
 
 ## 提取数据
+
 ### 使用css选择器
+
 ```java
 // 对于html类型的响应,可以直接通过此方法来获取html标签
 // 获取出来的标签可能有多个
@@ -64,7 +68,9 @@ String attr = first.attr("attr");
 // 获取标签中的文本信息
 first.text();
 ```
+
 ### 使用xpath选择器
+
 ```java
 NodeList list = response.xpath("/html/body/section/div/div[2]/ul/li/a");
 for (int i = 0; i < list.getLength(); i++) {
@@ -225,4 +231,3 @@ public class PixivApiSpiderTest extends PixivApiSpider {
     }
 }
 ```
-
