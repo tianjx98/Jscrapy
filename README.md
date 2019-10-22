@@ -6,7 +6,7 @@
   + [使用xpath选择器](#使用xpath选择器)
 * [存储爬取的数据](#存储爬取的数据)
   + [下载图片](#下载图片)
-* [pixiv API 使用](#pixiv api 使用)
+* [pixiv api 使用](#pixiv api 使用)
 
 ## 创建爬虫类爬取数据
 
@@ -188,7 +188,7 @@ public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
 }
 ```
 
-## pixiv API 使用
+## pixiv api 使用
 
 创建一个继承`me.tianjx98.Jscrapy.utils.PixivApiSpider`就可以调用接口来获取信息
 
