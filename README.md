@@ -31,7 +31,7 @@ public class TestSpider extends Spider {
       	// 从配置文件中读取多个爬虫类开始爬取(需要将爬虫类全类名写在配置文件中)
       	//start();
     }
-		// 收到初始请求的响应后会调用此函数处理响应
+	// 收到初始请求的响应后会调用此函数处理响应
     @Override
     public List<Request> parse(Response response) {
         System.out.println(response.getContent());
@@ -40,7 +40,7 @@ public class TestSpider extends Spider {
         // 获取出来的标签可能有多个
         Elements elements = response.css("css查询语句");
       
-				// 如果不需要发出新的响应，可直接返回null，如果所有请求都处理完成，爬虫自动关闭
+	// 如果不需要发出新的响应，可直接返回null，如果所有请求都处理完成，爬虫自动关闭
         // return null;
         // 发送单个请求
         return Request.builder("url", this)
