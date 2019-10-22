@@ -1,5 +1,6 @@
 package me.tianjx98.Jscrapy.http;
 
+import me.tianjx98.Jscrapy.utils.XPathTool;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
@@ -7,7 +8,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,6 +42,11 @@ public class Response {
 
     private boolean isHtml = false;
 
+    /**
+     * xpath选择器
+     */
+    private XPathTool xpath;
+
     public Response() {
     }
 
@@ -65,14 +74,38 @@ public class Response {
      * 可以直接使用谷歌浏览器的控制台中，复制标签的css选择语法
      *
      * @param cssQuery css查询表达式
-     * @return 返回被选择的元素，如果响应类型不是html，则返回null
+     * @return 返回被选择的元素，如果响应类型不是html, 返回的Elements里面元素为空
      */
-    public Elements select(String cssQuery) {
+    public Elements css(String cssQuery) {
         if (!isHtml) {
-            return null;
+            return new Elements();
         }
         Elements select = document.select(cssQuery);
         return select;
+    }
+
+    /**
+     * 可以直接使用谷歌浏览器的控制台中，复制标签的xpath选择语法
+     *
+     * @param xpathQuery xpath查询表达式
+     * @return 返回被选择的元素，如果响应类型不是html，则返回的NodeList里面元素为空
+     */
+    public NodeList xpath(String xpathQuery) {
+        if (!isHtml) {
+            return XPathTool.EMPTY;
+        }
+        try {
+            if (xpath == null) {
+                xpath = new XPathTool(content);
+            }
+            return xpath.select(xpathQuery);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (XPathExpressionException e) {
+            System.err.println("xpath表达式格式错误: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return XPathTool.EMPTY;
     }
 
     private Request.Builder followRequestBuilder(String relativePath, Function<Response, List<Request>> callback) {

@@ -62,10 +62,10 @@ public class PixivSpider extends Spider {
      */
     private List<Request> login(Response response) {
         // 可以直接在谷歌浏览器控制台复制某个标签的css选择器语法在这里用
-        Elements tag = response.select("#old-login > form > input[type=hidden]:nth-child(1)");
+        Elements tag = response.css("#old-login > form > input[type=hidden]:nth-child(1)");
         // 获取登陆页面中一个隐藏的登陆参数
         String postKey = tag.attr("value");
-        String token = response.select("#recaptcha-v3-token").attr("value");
+        String token = response.css("#recaptcha-v3-token").attr("value");
         // 获取配置文件里面的用户名和密码
         String username = SETTINGS.getString("username");
         String password = SETTINGS.getString("password");
@@ -106,7 +106,7 @@ public class PixivSpider extends Spider {
         System.out.println(response.getContent());
         Out.write(response.getContent(), new File("fav.html"));
         // 获取所有收藏图片的相对路径
-        Elements atags = response.select("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > div.display_editable_works > ul > li > a.work._work");
+        Elements atags = response.css("#wrapper > div.layout-a > div.layout-column-2 > div._unit.manage-unit > form > div.display_editable_works > ul > li > a.work._work");
         List<String> hrefs = atags.eachAttr("href");
         // 生成Request对象
         List<Request> follow = response.follow(hrefs, this::parse);

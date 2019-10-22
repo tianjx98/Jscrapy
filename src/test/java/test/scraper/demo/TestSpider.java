@@ -3,6 +3,8 @@ package test.scraper.demo;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class TestSpider extends Spider {
         name = "test";
         // 设置起始url，最开始会根据这些url发送请求，请求完成后会调用this::parse函数处理响应
         // 也可以重载startUrlsCallback()来修改默认的回调函数
-        startUrls.add("https://www.baidu.com");
+        //startUrls.add("https://www.baidu.com");
     }
 
     public static void main(String[] args) {
@@ -28,12 +30,23 @@ public class TestSpider extends Spider {
 
     @Override
     public List<Request> parse(Response response) {
-        System.out.println(response.getContent());
+        System.out.println("content+" + response.getContent());
+
+
+        /**
+         * 使用xpath获取元素
+         */
+        NodeList list = response.xpath("/html/body/section/div/div[2]/ul/li/a");
+        for (int i = 0; i < list.getLength(); i++) {
+            Node item = list.item(i);
+            System.out.println(item.getTextContent());
+        }
+
         return null;
         /**
          // 对于html类型的响应,可以直接通过此方法来获取html标签
          // 获取出来的标签可能有多个
-         Elements elements = response.select("css查询语句");
+         Elements elements = response.css("css查询语句");
          // 获取所有标签的href属性
          List<String> href = elements.eachAttr("href");
          // 获取里面的第一个标签

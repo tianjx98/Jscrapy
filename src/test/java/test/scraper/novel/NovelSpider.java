@@ -22,11 +22,12 @@ import java.util.function.Function;
 public class NovelSpider extends Spider {
     {
         name = "test/scraper/novel";
+        //startUrls.add("https://www.baidu.com");
         startUrls.add("https://m.wukongzhuishu.com/dir/DouPoCangQiong/");
         //startUrls.add("https://m.wukongzhuishu.com/dir/JueShiZhanHun/");
         //startUrls.add("https://m.wukongzhuishu.com/dir/dahuojiyugongzhuqun/");
         //startUrls.add("https://m.wukongzhuishu.com/dir/nvshenlianaiji0kuaichuan0/");
-        allowedDomains.add("m.wukongzhuishu.com");
+        //allowedDomains.add("m.wukongzhuishu.com");
     }
 
     public static void main(String[] args) {
@@ -39,12 +40,13 @@ public class NovelSpider extends Spider {
     }
 
     private List<Request> parseMenu(Response response) {
+        System.out.println(response.getContent());
         // 获取当前目录页的章节链接
-        Elements chapterElements = response.select("body > section > div > div.ptm-card-content.pt-dir > ul > li > a");
+        Elements chapterElements = response.css("body > section > div > div.ptm-card-content.pt-dir > ul > li > a");
 
         // 获取其他目录页
-        Elements menus = response.select("body > div.sel.ptm-hide > div.pt-dir-sel > ul > li > a");
-        String novelName = response.select("body > header > div").text();
+        Elements menus = response.css("body > div.sel.ptm-hide > div.pt-dir-sel > ul > li > a");
+        String novelName = response.css("body > header > div").text();
 
         // 将章节加入到请求数组里面
         ArrayList<Request> requests = new ArrayList<>(chapterElements.size() + menus.size());
@@ -64,7 +66,7 @@ public class NovelSpider extends Spider {
 
     private List<Request> parseChapter(Response response) {
         // 获取章节内容转换为字符串
-        Elements p = response.select("#articlecon > p");
+        Elements p = response.css("#articlecon > p");
         String text = Jsoup.clean(p.html(), "", Whitelist.none().addTags("br"), new Document.OutputSettings().prettyPrint(true));
         text = text.replaceAll("<br>", "");
         String url = response.getRequest().getUrl().toString();
