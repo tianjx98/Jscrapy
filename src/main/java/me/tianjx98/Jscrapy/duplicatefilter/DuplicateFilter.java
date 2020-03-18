@@ -2,7 +2,9 @@ package me.tianjx98.Jscrapy.duplicatefilter;
 
 import me.tianjx98.Jscrapy.http.Request;
 
-public interface DuplicateFilter {
+import java.io.Serializable;
+
+public interface DuplicateFilter extends Serializable {
     /**
      * 检验请求之前是否访问过
      * 如果访问过，返回 true

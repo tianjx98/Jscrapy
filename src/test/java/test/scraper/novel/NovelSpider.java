@@ -40,7 +40,6 @@ public class NovelSpider extends Spider {
     }
 
     private List<Request> parseMenu(Response response) {
-        System.out.println(response.getContent());
         // 获取当前目录页的章节链接
         Elements chapterElements = response.css("body > section > div > div.ptm-card-content.pt-dir > ul > li > a");
 
@@ -62,6 +61,7 @@ public class NovelSpider extends Spider {
         List<Request> menuRequests = response.follow(menus.eachAttr("href"), this::parseMenu);
         requests.addAll(menuRequests);
         return requests;
+        //return null;
     }
 
     private List<Request> parseChapter(Response response) {

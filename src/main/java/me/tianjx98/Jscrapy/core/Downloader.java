@@ -48,12 +48,12 @@ public class Downloader {
     private Map<String, Set<Request>> crawling = new HashMap<>();
 
     /**
-     * 当前下载的请求数
+     * 当前已经发送的请求数量，每发送一个请求，size加1，请求完成后size减1
      */
     private int size = 0;
 
     /**
-     * 记录发送的请求总数
+     * 记录发送的请求总数，每发送一个请求，count加1
      */
     private int count = 0;
 
@@ -92,6 +92,7 @@ public class Downloader {
             crawling.put(domain, requests);
         }
         requests.add(request);
+        LOGGER.debug("发送请求：" + request);
         // 发送请求
         client.execute(request, callback);
     }
@@ -103,12 +104,13 @@ public class Downloader {
      */
     void remove(Request request) {
         Set<Request> requests = crawling.get(request.getDomain());
+        LOGGER.debug("请求完成：" + request);
         requests.remove(request);
-        this.size--;
+        size--;
     }
 
     /**
-     * 关闭下载器
+     * 关闭下载器，如果下载器还有任务没完成，就等待任务完成
      */
     public void close() {
         client.close();

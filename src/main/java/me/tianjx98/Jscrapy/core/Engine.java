@@ -7,6 +7,7 @@ import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public class Engine extends BasicEngine {
     }
 
     private long startTime;
+
+    private boolean closed = false;
 
     /**
      * 调用爬虫类里面的startRequests方法来生成初始请求，启动爬虫
@@ -55,13 +58,19 @@ public class Engine extends BasicEngine {
     }
 
     private void close() {
+        // 关闭下载器
         downloader.close();
+        // 关闭管道
         pipelineManager.closePipelines();
+        String rootPath = SETTINGS.getString("rootPath");
+        // 计算运行时间
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long minutes = seconds / 60;
         seconds %= 60;
         LOGGER.info("总共爬取 " + minutes + " 分 " + seconds + " 秒" + "共发送 " + downloader.getCount() + " 个请求!");
     }
+
+    int c = 0;
 
     private void nextRequest() {
         //如果正在爬取的列表为空，调度器中也为空，则停止爬取
@@ -69,11 +78,14 @@ public class Engine extends BasicEngine {
             close();
         }
         //如果正在爬取的数量小于最大并发数，就向正在爬取的集合里面添加请求
-        while (!scheduler.isEmpty() && !downloader.needBlock()) {
+        while (!scheduler.isEmpty() && !downloader.needBlock() && ++c <= 4) {
             Request request = scheduler.nextRequest();
             downloader.download(request, new SpiderCallback(request));
         }
-
+        if (c > 4 && !closed && downloader.getSize() == 0) {
+            close();
+            closed = true;
+        }
 
     }
 
@@ -97,6 +109,7 @@ public class Engine extends BasicEngine {
          */
         @Override
         public void completed(HttpResponse result) {
+            LOGGER.debug("请求成功：" + request);
             // 请求完成后，移除正在爬取的请求
             downloader.remove(request);
             // 调用请求类里面的回调函数，返回值可能为一个Request对象，也可能是一个Request对象数组
@@ -112,8 +125,9 @@ public class Engine extends BasicEngine {
             } catch (Exception e) {
                 spiderMiddlewareManager.processException(response, e);
             }
-            // 将处理后的请求加到调度器
+            // 将处理后产生的新请求加到调度器
             scheduler.addRequest(requests, null);
+            // 继续获取下一个请求
             nextRequest();
         }
 
@@ -121,13 +135,13 @@ public class Engine extends BasicEngine {
         public void failed(Exception ex) {
             // 请求完成后，移除正在爬取的请求
             downloader.remove(request);
-
             LOGGER.error(ex == null ? null : ex.getMessage());
             nextRequest();
         }
 
         @Override
         public void cancelled() {
+            LOGGER.debug("cancelled");
             // 请求完成后，移除正在爬取的请求
             downloader.remove(request);
             nextRequest();

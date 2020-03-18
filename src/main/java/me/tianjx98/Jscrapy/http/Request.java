@@ -14,6 +14,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -21,7 +22,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 
-public class Request {
+public class Request implements Serializable {
     private static Logger logger = LoggerFactory.getLogger(Request.class);
 
     /**

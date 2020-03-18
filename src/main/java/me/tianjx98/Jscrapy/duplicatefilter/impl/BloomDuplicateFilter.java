@@ -11,6 +11,8 @@ import java.util.BitSet;
  * @Date 2019-09-16 18:25
  */
 public class BloomDuplicateFilter implements DuplicateFilter {
+
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_SIZE = 2 << 28;
 
     /*

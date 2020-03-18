@@ -16,6 +16,7 @@ import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.TreeMap;
 /**
  * 核心引擎父类，主要在启动时通过配置文件初始化异步请求客户端，调度器，加载中间件
  *
- * @ClassName Engine
+ * @ClassName BasicEngine
  * @Author tian
  * @Date 2019/7/20 9:33
  * @Version 1.0
@@ -93,15 +94,20 @@ public class BasicEngine {
      * @return 调度器对象
      */
     private Scheduler createScheduler() {
-        Config scheduler = SETTINGS.getConfig("scheduler");
+        // 获取调度器配置
+        Config schedulerConfig = SETTINGS.getConfig("scheduler");
+        // 过滤器完整类名，默认为me.tianjx98.Jscrapy.duplicatefilter.impl.BloomDuplicateFilter
+        String defaultDupFilter = schedulerConfig.getString("defaultDupFilter");
+        LOGGER.info("DupFilter = " + defaultDupFilter);
+
+        // 读取失败，重新创建一个调度器
         DuplicateFilter dupFilter = null;
         try {
-            dupFilter = (DuplicateFilter) Class.forName(scheduler.getString("defaultDupFilter")).getConstructor().newInstance();
+            dupFilter = (DuplicateFilter) Class.forName(defaultDupFilter).getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        LOGGER.info("DupFilter = " + dupFilter.getClass().getName());
-        return new Scheduler(dupFilter, scheduler.getBoolean("bfs"));
+        return new Scheduler(dupFilter, schedulerConfig.getBoolean("bfs"));
     }
 
     private void createSpiderFromClass(Class<? extends Spider> clazz) {
@@ -114,8 +120,6 @@ public class BasicEngine {
             }
             spider.setEngine(this);
             this.spiders.add(spider);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

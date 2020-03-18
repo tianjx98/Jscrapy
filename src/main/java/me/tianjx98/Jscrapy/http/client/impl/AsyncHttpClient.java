@@ -185,7 +185,8 @@ public class AsyncHttpClient implements HttpClient {
         // 配置io线程
         IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
                 .setIoThreadCount(maxThreadNum)
-                .setConnectTimeout(connTimeout)
+                //.setConnectTimeout(56)
+                .setSoTimeout(connTimeout)// 设置超时时间，单位为ms
                 .build();
         PoolingNHttpClientConnectionManager conMgr = new PoolingNHttpClientConnectionManager(new DefaultConnectingIOReactor(ioReactorConfig), sessionStrategyRegistry);
 

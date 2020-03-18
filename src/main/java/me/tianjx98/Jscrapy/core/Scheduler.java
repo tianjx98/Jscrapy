@@ -1,10 +1,13 @@
 package me.tianjx98.Jscrapy.core;
 
+import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
 import me.tianjx98.Jscrapy.http.Request;
+import me.tianjx98.Jscrapy.utils.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -17,9 +20,9 @@ import java.util.function.Consumer;
  * @Date 2019/7/21 16:09
  * @Version 1.0
  */
-public class Scheduler {
+public class Scheduler implements Serializable{
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
-
+    private static final long serialVersionUID = 1L;
     /**
      * 用于去重的类
      */
@@ -68,6 +71,10 @@ public class Scheduler {
             if (consumer != null) consumer.accept(request);
             addRequest(request);
         }
+    }
+
+    public DuplicateFilter getFilter() {
+        return filter;
     }
 
     /**
