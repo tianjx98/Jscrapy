@@ -1,13 +1,11 @@
 package me.tianjx98.Jscrapy.core;
 
-import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
 import me.tianjx98.Jscrapy.http.Request;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,6 +25,8 @@ public class Scheduler implements Serializable{
      * 用于去重的类
      */
     private DuplicateFilter filter;
+    private int totalRequestNum = 0;
+    private int repeatRequestNum = 0;
 
     /**
      * 任务队列，存放待发送的请求
@@ -53,9 +53,13 @@ public class Scheduler implements Serializable{
      */
     public void addRequest(Request request) {
         // 如果不需要过滤请求就直接跳过查重
-        if (request.isDoFilter() && filter.isDuplicate(request)) return;
+        if (request.isDoFilter() && filter.isDuplicate(request)) {
+            repeatRequestNum++;
+            return;
+        }
         if (bfs) queue.addLast(request);
         else queue.addFirst(request);
+        totalRequestNum++;
     }
 
     /**
@@ -92,5 +96,17 @@ public class Scheduler implements Serializable{
 
     public synchronized int size() {
         return queue.size();
+    }
+
+    public LinkedList<Request> getQueue() {
+        return queue;
+    }
+
+    public int getTotalRequestNum() {
+        return totalRequestNum;
+    }
+
+    public int getRepeatRequestNum() {
+        return repeatRequestNum;
     }
 }

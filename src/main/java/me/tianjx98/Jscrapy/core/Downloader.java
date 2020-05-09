@@ -1,6 +1,5 @@
 package me.tianjx98.Jscrapy.core;
 
-import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.client.HttpClient;
 import me.tianjx98.Jscrapy.utils.Setting;
@@ -25,7 +24,7 @@ import java.util.Set;
  */
 public class Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
-    private static final Config SETTINGS = Setting.SETTINGS;
+    private static final Setting SETTINGS = Setting.SETTINGS;
 
     //private final Timer timer = new Timer();
 
@@ -107,6 +106,10 @@ public class Downloader {
         LOGGER.debug("请求完成：" + request);
         requests.remove(request);
         size--;
+    }
+
+    public Map<String, Set<Request>> getCrawling() {
+        return crawling;
     }
 
     /**

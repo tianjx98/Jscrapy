@@ -100,7 +100,7 @@ public class AsyncHttpClient implements HttpClient {
 
     public void execute(Request request, FutureCallback<HttpResponse> callback) {
         LOGGER.trace(request.toString());
-        client.execute(request.getRequest(), callback);
+        client.execute(request.generateRequest(), callback);
     }
 
     /**

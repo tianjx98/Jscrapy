@@ -1,6 +1,5 @@
 package me.tianjx98.Jscrapy.core;
 
-import com.typesafe.config.Config;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.pipeline.Item;
@@ -22,7 +21,7 @@ import java.util.function.Function;
  * @Version 1.0
  */
 public abstract class Spider implements Serializable {
-    protected static final Config SETTINGS = Setting.SETTINGS;
+    protected static final Setting SETTINGS = Setting.SETTINGS;
     /**
      * 爬虫的名称
      */
@@ -38,7 +37,7 @@ public abstract class Spider implements Serializable {
     protected HashSet<String> startUrls = new HashSet<>();
 
     /**
-     * 每一个爬虫类产生的请求对象都会添加该爬虫类的默认请求头
+     * 每一个该爬虫类产生的请求对象都会添加该爬虫类的默认请求头
      */
     protected HashMap<String, String> defaultHeaders = new HashMap<>();
 
@@ -121,5 +120,9 @@ public abstract class Spider implements Serializable {
     @Override
     public String toString() {
         return "[" + name + ":" + getClass().getName() + "]";
+    }
+
+    public String getName() {
+        return name;
     }
 }

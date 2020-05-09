@@ -1,8 +1,5 @@
 package me.tianjx98.Jscrapy.core;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
-import com.typesafe.config.ConfigValue;
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
 import me.tianjx98.Jscrapy.http.client.impl.AsyncHttpClient;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
@@ -16,7 +13,6 @@ import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,8 +27,8 @@ import java.util.TreeMap;
  * @Date 2019/7/20 9:33
  * @Version 1.0
  */
-public class BasicEngine {
-    protected static final Config SETTINGS = Setting.SETTINGS;
+public abstract class BasicEngine {
+    protected static final Setting SETTINGS = Setting.SETTINGS;
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicEngine.class);
     /**
      * 启动时加载所有爬虫类放到该集合中
@@ -60,10 +56,10 @@ public class BasicEngine {
      */
     BasicEngine() {
         // 从配置文件中获取所有的爬虫类名
-        List<String> spidersName = SETTINGS.getStringList("spiders");
-        for (String className : spidersName) {
+        Map spidersName = SETTINGS.getSetting("spiders").getSettingsMap();
+        for (Object className : spidersName.keySet()) {
             try {
-                Class<Spider> clazz = (Class<Spider>) Class.forName(className);
+                Class<Spider> clazz = (Class<Spider>) Class.forName((String) className);
                 createSpiderFromClass(clazz);
             } catch (ClassNotFoundException e) {
                 LOGGER.error("未找到Spider:" + e.getMessage() + ", 请检查配置文件");
@@ -94,10 +90,8 @@ public class BasicEngine {
      * @return 调度器对象
      */
     private Scheduler createScheduler() {
-        // 获取调度器配置
-        Config schedulerConfig = SETTINGS.getConfig("scheduler");
         // 过滤器完整类名，默认为me.tianjx98.Jscrapy.duplicatefilter.impl.BloomDuplicateFilter
-        String defaultDupFilter = schedulerConfig.getString("defaultDupFilter");
+        String defaultDupFilter = SETTINGS.getString("scheduler|defaultDupFilter");
         LOGGER.info("DupFilter = " + defaultDupFilter);
 
         // 读取失败，重新创建一个调度器
@@ -107,7 +101,7 @@ public class BasicEngine {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return new Scheduler(dupFilter, schedulerConfig.getBoolean("bfs"));
+        return new Scheduler(dupFilter, SETTINGS.getBoolean("scheduler|bfs"));
     }
 
     private void createSpiderFromClass(Class<? extends Spider> clazz) {
@@ -134,20 +128,17 @@ public class BasicEngine {
         HttpHost host = null;
         LinkedList<BasicHeader> headers = null;
 
-        //获取代理配置，如果配置文件没有则为null
-        try {
-            Config proxy = SETTINGS.getConfig("proxy");
-            host = new HttpHost(proxy.getString("host"), proxy.getInt("port"));
-        } catch (ConfigException.Missing e) {
-            //LOGGER.error(e.getMessage());
+        //获取代理配置，如果不使用代理则为null
+        if (SETTINGS.getBoolean("proxy|enable")) {
+            host = new HttpHost(SETTINGS.getString("proxy|host"), SETTINGS.getInt("proxy|port"));
         }
 
         // 获取超时时间
-        double connectionTimeout = SETTINGS.getDouble("connectionTimeout");
+        int connectionTimeout = SETTINGS.getInt("connectionTimeout");
 
         int maxThreadNum = SETTINGS.getInt("maxThreadNum");
 
-        return new AsyncHttpClient(host, (int) (connectionTimeout * 1000), maxThreadNum);
+        return new AsyncHttpClient(host, connectionTimeout, maxThreadNum);
     }
 
     private Downloader createDownloader() {
@@ -157,12 +148,12 @@ public class BasicEngine {
         // 获取同一域名下的最大并发数
         int concurrentRequestsPerDomain = SETTINGS.getInt("concurrentRequestsPerDomain");
 
-        // 获取随机延迟
-        double randomDownloadDelay = SETTINGS.getDouble("randomDownloadDelay");
+        // 获取随机延迟(ms)
+        int randomDownloadDelay = SETTINGS.getInt("randomDownloadDelay");
 
         return new Downloader(concurrentRequests,
                 concurrentRequestsPerDomain,
-                (int) (randomDownloadDelay * 1000),//将随机延迟转化为毫秒
+                randomDownloadDelay,
                 createAsyncHttpClient());
     }
 
@@ -172,15 +163,16 @@ public class BasicEngine {
      * @return pipeline管理器对象
      */
     private PipelineManager createPipelineManager() {
-        Config itemPipelinesConfig = SETTINGS.getConfig("itemPipelines");
+        Map itemPipelinesConfig = SETTINGS.getSetting("itemPipelines").getSettingsMap();
         // 因为pipeline是有优先级的，所有使用TreeMap
         TreeMap<Integer, Pipeline> pipelineTreeMap = new TreeMap<>();
-        for (Map.Entry<String, ConfigValue> entry : itemPipelinesConfig.entrySet()) {
-            String className = entry.getValue().unwrapped().toString();
+        for (Object entryObj : itemPipelinesConfig.entrySet()) {
+            Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) entryObj;
+            String className = entry.getKey();
             try {
                 Pipeline pipeline = (Pipeline) Class.forName(className).getConstructor().newInstance();
                 pipeline.setEngine(this);
-                pipelineTreeMap.put(Integer.valueOf(entry.getKey()), pipeline);
+                pipelineTreeMap.put(entry.getValue(), pipeline);
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -196,14 +188,15 @@ public class BasicEngine {
      * @return 爬虫中间件管理器
      */
     private SpiderMiddlewareManager createSpiderMiddlewareManager() {
-        Config spiderMiddlewaresConfig = SETTINGS.getConfig("spiderMiddlewares");
+        Map spiderMiddlewaresConfig = SETTINGS.getSetting("spiderMiddlewares").getSettingsMap();
         TreeMap<Integer, SpiderMiddleware> spiderMiddlewaresTreeMap = new TreeMap<>();
-        for (Map.Entry<String, ConfigValue> entry : spiderMiddlewaresConfig.entrySet()) {
-            String className = entry.getValue().unwrapped().toString();
+        for (Object entryObj : spiderMiddlewaresConfig.entrySet()) {
+            Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) entryObj;
+            String className = entry.getKey();
             try {
                 SpiderMiddleware spiderMiddleware = (SpiderMiddleware) Class.forName(className).getConstructor().newInstance();
                 spiderMiddleware.setEngine(this);
-                spiderMiddlewaresTreeMap.put(Integer.valueOf(entry.getKey()), spiderMiddleware);
+                spiderMiddlewaresTreeMap.put(entry.getValue(), spiderMiddleware);
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

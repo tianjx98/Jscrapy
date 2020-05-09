@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class Monitor extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(Monitor.class);
     private final BasicEngine engine;
+    private boolean closed;
 
     public Monitor(BasicEngine engine) {
         this.engine = engine;
@@ -21,14 +22,19 @@ public class Monitor extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        closed = false;
+        while (!closed) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(12000);
                 printStatus();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void close() {
+        closed = true;
     }
 
     private void printStatus() {

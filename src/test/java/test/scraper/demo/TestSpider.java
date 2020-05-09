@@ -3,8 +3,6 @@ package test.scraper.demo;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.List;
 
@@ -36,11 +34,6 @@ public class TestSpider extends Spider {
         /**
          * 使用xpath获取元素
          */
-        NodeList list = response.xpath("/html/body/section/div/div[2]/ul/li/a");
-        for (int i = 0; i < list.getLength(); i++) {
-            Node item = list.item(i);
-            System.out.println(item.getTextContent());
-        }
 
         return null;
         /**

@@ -1,0 +1,70 @@
+defaultHeaders: {
+  name: '默认请求头',
+  description: '每次发送请求时都会添加这些请求头',
+}
+proxy: {
+  name: '代理',
+  description: '每次发送请求都会经过代理'
+}
+
+# 爬虫的完整类名，如果调用无参的Engine()构造函数时会读取这个配置文件来生成爬虫对象
+spiders: {
+  name: '爬虫对象',
+  description: '系统启动时会加载这些爬虫对象',
+}
+spiderMiddlewares: {
+  name: '爬虫中间件',
+  description: '处理进入爬虫的响应和爬虫产生的请求, 数值越小优先级越高',
+}
+itemPipelines: {
+  name: '持久化Pipelines',
+  description: '处理爬虫产生的item，数字越小优先级越高',
+}
+
+maxThreadNum: {
+  name: '最大线程数',
+  description: '同时工作的线程数量'
+}
+
+connectionTimeout: {
+  name: '请求超时时间',
+  description: '如果发出请求后超出此时间还未收到响应就取消此次请求,单位为s'
+}
+
+concurrentRequests: {
+  name: '并发请求的最大值',
+  description: '同一时间允许发出请求的最大数量,默认最多可以同时发出16个请求'
+}
+
+# 每一个域名下的并发请求最大值
+concurrentRequestsPerDomain: {
+  name: '每一个域名下的并发请求最大值',
+  description: '同一域名下同一时间允许发出请求的最大数量,默认最多可以同时发出8个请求'
+}
+
+randomDownloadDelay: {
+  name: '随机下载延迟',
+  description: '随机下载延迟, 对于同一个域名下的请求, 两次请求之间会产生一个0-randomDownloadDelay(s)的延迟'
+}
+
+depthLimit: {
+  name: '爬虫深度限制',
+  description: '如果请求的深度超过此限制，请求将会被丢弃'
+}
+
+# 调度器配置
+scheduler: {
+  name: '调度器配置',
+  description: '',
+  # 设置指定的去重类，该类需要实现me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter接口
+  # defaultDupFilter = "me.tianjx98.Jscrapy.duplicatefilter.impl.HashDuplicateFilter"
+  hasNext: true,
+  defaultDupFilter: {
+    name: 'URL去重类',
+    description: '用于实现调度器中的去重算法,默认使用 布隆过滤器'
+  },
+  bfs: {
+    name: '爬取规则',
+    description: '默认为（true）广度优先爬取，设置为false则是深度优先爬取'
+  }
+}

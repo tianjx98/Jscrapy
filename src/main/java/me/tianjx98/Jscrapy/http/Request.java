@@ -1,7 +1,5 @@
 package me.tianjx98.Jscrapy.http;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigValue;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.Header;
@@ -162,7 +160,7 @@ public class Request implements Serializable {
      *
      * @return 请求对象
      */
-    public HttpRequestBase getRequest() {
+    public HttpRequestBase generateRequest() {
         Header[] headers = new Header[this.headers.size()];
         int i = 0;
         for (Map.Entry<String, String> entry : this.headers.entrySet()) {
@@ -268,9 +266,10 @@ public class Request implements Serializable {
             this.url = url;
             this.spider = spider;
             // 从配置文件中读取默认的请求头
-            Config defaultHeaders = Setting.SETTINGS.getConfig("defaultHeaders");
-            for (Map.Entry<String, ConfigValue> entry : defaultHeaders.entrySet()) {
-                requestHeaders.put(entry.getKey(), entry.getValue().unwrapped().toString());
+            Map defaultHeaders = Setting.SETTINGS.getSetting("defaultHeaders").getSettingsMap();
+            for (Object entryObj : defaultHeaders.entrySet()) {
+                Map.Entry<String, String> entry = (Map.Entry<String, String>) entryObj;
+                requestHeaders.put(entry.getKey(), entry.getValue());
             }
             // 再读取Spider里面的默认请求头, 会覆盖配置文件中的
             requestHeaders.putAll(spider.getDefaultHeaders());

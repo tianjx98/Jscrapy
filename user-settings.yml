@@ -1,0 +1,29 @@
+defaultHeaders: {
+  Accept: '*/*',
+  Accept-Language: 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+}
+spiders: {
+  me.tianjx98.Jscrapy.utils.scraper.novel.NovelSpider: 1
+}
+spiderMiddlewares: {
+  me.tianjx98.Jscrapy.middleware.spider.impl.DepthSpiderMiddleware: 1,
+  me.tianjx98.Jscrapy.middleware.spider.impl.AllowedDomainSpiderMiddleware: 2
+}
+itemPipelines: {
+  me.tianjx98.Jscrapy.utils.scraper.novel.NovelPipeline: 1
+}
+maxThreadNum: 1
+connectionTimeout: 0
+concurrentRequests: 16
+concurrentRequestsPerDomain: 1
+randomDownloadDelay: 0
+scheduler: {
+  defaultDupFilter: me.tianjx98.Jscrapy.duplicatefilter.impl.BloomDuplicateFilter,
+  bfs: true
+}
+depthLimit: 0
+proxy: {
+  enable: false,
+  host: '',
+  port: 8888
+}
