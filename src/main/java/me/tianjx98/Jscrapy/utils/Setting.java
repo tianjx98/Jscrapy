@@ -19,6 +19,13 @@ import java.util.*;
 public class Setting {
     private static final Yaml yaml;
     //public static final Setting DEFAULT_SETTINGS;
+    static {
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setPrettyFlow(true);
+        yaml = new Yaml(dumperOptions);
+        Map map = yaml.load(Setting.class.getResourceAsStream("/" + "default-settings-description.yml"));
+        SETTINGS_DESCRIPTION = new Setting(map);
+    }
     private static final String USER_SETTING_PATH = "/Users/tianjx98/IdeaProjects/Jscrapy/user-settings.yml";
 
     //public static final Config SETTINGS = ConfigFactory.load("settings.conf")//读取用户配置文件,会覆盖默认配置文件
@@ -27,13 +34,7 @@ public class Setting {
     private static Setting USER_SETTINGS = load(USER_SETTING_PATH);
     public static final Setting SETTINGS = merge(load("default-settings.yml"), USER_SETTINGS);
 
-    static {
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setPrettyFlow(true);
-        yaml = new Yaml(dumperOptions);
-        Map map = yaml.load(Setting.class.getResourceAsStream("/" + "default-settings-description.yml"));
-        SETTINGS_DESCRIPTION = new Setting(map);
-    }
+
 
     private Map settingsMap;
     private List<ConfigObject> settingList = null;

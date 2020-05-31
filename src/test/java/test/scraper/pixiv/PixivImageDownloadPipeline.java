@@ -16,6 +16,11 @@ import java.util.List;
  */
 public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
     @Override
+    protected boolean isProcess(Item item) {
+        return item instanceof PixivItem;
+    }
+
+    @Override
     protected List<Request> getImageRequest(Item item, Spider spider) {
         if (item instanceof PixivItem) {
             // 从item中获取图片url然后生成请求

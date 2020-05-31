@@ -8,10 +8,7 @@ import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 主要用于下载各种请求
@@ -26,7 +23,8 @@ public class Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
     private static final Setting SETTINGS = Setting.SETTINGS;
 
-    //private final Timer timer = new Timer();
+    private final Timer timer = new Timer();
+    private final Random random = new Random();
 
     /**
      * 请求的最大并发数, 默认最多只能同时发送16个请求
@@ -38,7 +36,7 @@ public class Downloader {
     private int concurrentRequestsPerDomain;
     /**
      * TODO
-     * 随机延迟
+     * 随机延迟(ms)
      */
     private int randomDownloadDelay;
 
@@ -81,6 +79,20 @@ public class Downloader {
      * @param callback 下载完成后调用的回调函数
      */
     void download(Request request, FutureCallback<HttpResponse> callback) {
+        if (randomDownloadDelay <= 0) {
+            _download(request, callback);
+            return;
+        }
+        int delay = random.nextInt(randomDownloadDelay);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                _download(request, callback);
+            }
+        }, delay);
+    }
+
+    private void _download(Request request, FutureCallback<HttpResponse> callback) {
         // 将请求添加到请求队列
         this.size++;
         this.count++;
@@ -117,6 +129,7 @@ public class Downloader {
      */
     public void close() {
         client.close();
+        timer.cancel();
     }
 
     /**

@@ -19,7 +19,7 @@ import java.io.IOException;
  * @Date 2019/7/23 16:32
  * @Version 1.0
  */
-public class JsonWriterPipeline extends Pipeline {
+public abstract class JsonWriterPipeline extends Pipeline {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonWriterPipeline.class);
 
     SequenceWriter writer;
@@ -44,12 +44,13 @@ public class JsonWriterPipeline extends Pipeline {
 
     @Override
     public Item processItem(Item item, Spider spider) {
-        if (!isWrite(item)) return item;
-        try {
-            LOGGER.info(item.toString());
-            writer.write(item);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (isWrite(item)) {
+            try {
+                LOGGER.info(item.toString());
+                writer.write(item);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         // 返回item交给下一个pipeline处理
         return item;
@@ -80,7 +81,5 @@ public class JsonWriterPipeline extends Pipeline {
      * @return Json文件路径, 可以为相对路径,也可以为绝对路径
      * @implSpec 必须要重载这个方法, 否则会抛出UnsupportedOperationException异常, 通过这个方法生成文件路径, 然后在open方法中会根据这个路径生成文件写入数据
      */
-    protected String filePath() {
-        throw new UnsupportedOperationException();
-    }
+    protected abstract String filePath();
 }

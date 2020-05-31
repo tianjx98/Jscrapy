@@ -59,7 +59,7 @@ public class Response {
             // 如果是文本类型就将文本保存在String里面
             if (contentType.startsWith("text") || contentType.startsWith("application/json")) {
                 // TODO: charset问题还没解决, 如果content-type里面没有charset就会乱码
-                content = EntityUtils.toString(response.getEntity());
+                content = EntityUtils.toString(response.getEntity(), "utf8");
             }
             // 如果是html文档就解析
             if (isHtml) {

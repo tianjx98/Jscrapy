@@ -24,11 +24,12 @@ import java.util.UUID;
  * @Description TODO
  * @Author tian
  * @Date 2019/7/25 15:45
- * @Version 1.0
+ * @Version 1.0s
  */
 public abstract class ImageDownloadPipeline extends Pipeline {
     private static Logger LOGGER = LoggerFactory.getLogger(ImageDownloadPipeline.class);
-    private String imageStore = Setting.SETTINGS.getString("imageStore");
+    //private String imageStore = Setting.SETTINGS.getString("imageStore");
+    private String imageStore = "images/";
 
     @Override
     public void open() {
@@ -37,13 +38,23 @@ public abstract class ImageDownloadPipeline extends Pipeline {
 
     @Override
     public Item processItem(Item item, Spider spider) {
-        List<Request> imageRequest = getImageRequest(item, spider);
-        this.engine.getScheduler().addRequest(imageRequest, request -> {
-            request.setCallback(this::saveImage);
-            request.setSpider(spider);
-        });
+        if (isProcess(item)) {
+            List<Request> imageRequest = getImageRequest(item, spider);
+            this.engine.getScheduler().addRequest(imageRequest, request -> {
+                request.setCallback(this::saveImage);
+                request.setSpider(spider);
+            });
+        }
         return item;
     }
+
+    /**
+     * 判断哪些Item交给这个Pipeline当做图片处理
+     *
+     * @param item 即将处理的item对象
+     * @return 如果返回true, 则会处理这个item
+     */
+    protected abstract boolean isProcess(Item item);
 
     /**
      * 将图片信息写到文件
@@ -94,9 +105,9 @@ public abstract class ImageDownloadPipeline extends Pipeline {
     /**
      * 生成图片的存储路径，默认存储在配置文件imageStore路径的images下，生成一个以UUID.jpg命名的文件
      *
-     * @param request   图片的请求对象，可以从里面读取图片信息
-     * @implSpec 生成一个绝对路径或相对路径的字符串，如果是相对路径，就以配置文件中的imageStore为根路径拼接
+     * @param request 图片的请求对象，可以从里面读取图片信息
      * @return 存储图片的路径
+     * @implSpec 生成一个绝对路径或相对路径的字符串，如果是相对路径，就以配置文件中的imageStore为根路径拼接
      */
     protected String filePath(Request request) {
         return "images/" + UUID.randomUUID() + ".jpg";

@@ -138,7 +138,7 @@ public abstract class BasicEngine {
 
         int maxThreadNum = SETTINGS.getInt("maxThreadNum");
 
-        return new AsyncHttpClient(host, connectionTimeout, maxThreadNum);
+        return new AsyncHttpClient(host, connectionTimeout * 1000, maxThreadNum);
     }
 
     private Downloader createDownloader() {
