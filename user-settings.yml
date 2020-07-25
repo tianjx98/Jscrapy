@@ -3,20 +3,21 @@ defaultHeaders: {
   Accept-Language: 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
 }
 spiders: {
-  me.tianjx98.Jscrapy.utils.scraper.image_download.ImageDownloadSpider: 2
+  me.tianjx98.Jscrapy.utils.scraper.image_download.ImageDownloadSpider: 2,
+  me.tianjx98.Jscrapy.utils.scraper.novel2.NovelSpider: 50
 }
 spiderMiddlewares: {
   me.tianjx98.Jscrapy.middleware.spider.impl.DepthSpiderMiddleware: 1,
   me.tianjx98.Jscrapy.middleware.spider.impl.AllowedDomainSpiderMiddleware: 2
 }
 itemPipelines: {
-  me.tianjx98.Jscrapy.utils.scraper.novel.NovelPipeline: 1,
+  me.tianjx98.Jscrapy.utils.scraper.novel2.NovelPipeline: 1,
   me.tianjx98.Jscrapy.utils.scraper.image_download.ImageDownloadPipeline: 2
 }
 maxThreadNum: 4
-connectionTimeout: 10
-concurrentRequests: 8
-concurrentRequestsPerDomain: 8
+connectionTimeout: 0
+concurrentRequests: 4
+concurrentRequestsPerDomain: 4
 randomDownloadDelay: 0
 scheduler: {
   defaultDupFilter: me.tianjx98.Jscrapy.duplicatefilter.impl.BloomDuplicateFilter,
