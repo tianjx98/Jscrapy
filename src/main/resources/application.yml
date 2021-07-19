@@ -1,0 +1,12 @@
+jscrapy:
+  max-thread-num: 4
+  connection-timeout: 10
+  concurrent-requests: 16
+  concurrent-requests-per-domain: 8
+  random-download-delay: 0
+  depth-limit: 0
+
+  proxy:
+    enable: false
+    host: 134.209.103.207
+    port: 8888
