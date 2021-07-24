@@ -1,7 +1,6 @@
 package me.tianjx98.Jscrapy.http;
 
 import me.tianjx98.Jscrapy.core.Spider;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -98,8 +97,12 @@ public class Request implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (!(obj instanceof Request)) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Request)) {
+            return false;
+        }
         Request o = (Request) obj;
         return url.equals(o.url);
     }
@@ -116,7 +119,9 @@ public class Request implements Serializable {
      * @return
      */
     public List<Request> callback(Response response) {
-        if (callback == null) return null;
+        if (callback == null) {
+            return null;
+        }
         try {
             return callback.apply(response);
         } catch (Exception e) {
@@ -132,7 +137,9 @@ public class Request implements Serializable {
      * @return
      */
     public Object errback(Response response) {
-        if (errback == null) return null;
+        if (errback == null) {
+            return null;
+        }
         return errback.apply(response);
     }
 
@@ -266,7 +273,8 @@ public class Request implements Serializable {
             this.url = url;
             this.spider = spider;
             // 从配置文件中读取默认的请求头
-            Map defaultHeaders = Setting.SETTINGS.getSetting("defaultHeaders").getSettingsMap();
+            //Map defaultHeaders = Setting.SETTINGS.getSetting("defaultHeaders").getSettingsMap();
+            Map defaultHeaders = new HashMap();
             for (Object entryObj : defaultHeaders.entrySet()) {
                 Map.Entry<String, String> entry = (Map.Entry<String, String>) entryObj;
                 requestHeaders.put(entry.getKey(), entry.getValue());
@@ -318,7 +326,9 @@ public class Request implements Serializable {
         }
 
         public Request build() {
-            if (url == null) return null;
+            if (url == null) {
+                return null;
+            }
             Objects.requireNonNull(url, "url");
             //Objects.requireNonNull(callback, "callback");
             return new Request(spider, url, requestHeaders, requestBodies, callback, errback, doFilter, data);

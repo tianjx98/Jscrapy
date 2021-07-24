@@ -1,15 +1,18 @@
 package me.tianjx98.Jscrapy.middleware.spider.impl;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.extern.log4j.Log4j2;
+import me.tianjx98.Jscrapy.config.JscrapyConfig;
 import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
-import me.tianjx98.Jscrapy.utils.Setting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 限定爬虫深度的中间件，如果深度小于等于0，就不作限制
@@ -18,21 +21,26 @@ import java.util.Map;
  * @Author tianjx98
  * @Date 2019-07-29 08:10
  */
+@Log4j2
 public class DepthSpiderMiddleware extends SpiderMiddleware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DepthSpiderMiddleware.class);
+    @Autowired
+    JscrapyConfig config;
     private int depthLimit;
 
-    @Override
-    protected void open() {
-        this.depthLimit = Setting.SETTINGS.getInt("depthLimit");
+    @PostConstruct
+    private void init() {
+        depthLimit = config.getDepthLimit();
     }
+
+    @Override
+    protected void open() {}
 
     /**
      * 丢弃深度超过指定限制的请求
      *
      * @param response 当前处理的响应
      * @param requests 从响应中提取出的新的请求
-     * @param spider   处理当前响应的Spider
+     * @param spider 处理当前响应的Spider
      */
     @Override
     protected void processSpiderOutput(Response response, List<Request> requests, Spider spider) {
@@ -50,7 +58,7 @@ public class DepthSpiderMiddleware extends SpiderMiddleware {
         // 如果当前请求的深度超过限制，就丢弃这些请求
         if (depthLimit > 0 && depth > depthLimit) {
             requests.removeIf(request -> {
-                LOGGER.info("丢弃请求" + request + ", 深度" + depth + "超过最大深度" + depthLimit);
+                log.info("丢弃请求" + request + ", 深度" + depth + "超过最大深度" + depthLimit);
                 return true;
             });
             return;

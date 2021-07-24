@@ -3,7 +3,6 @@ package me.tianjx98.Jscrapy.core;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.pipeline.Item;
-import me.tianjx98.Jscrapy.utils.Setting;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import java.util.function.Function;
  * @Version 1.0
  */
 public abstract class Spider implements Serializable {
-    protected static final Setting SETTINGS = Setting.SETTINGS;
     /**
      * 爬虫的名称
      */

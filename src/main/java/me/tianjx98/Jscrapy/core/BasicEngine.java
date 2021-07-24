@@ -7,7 +7,6 @@ import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddlewareManager;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.pipeline.PipelineManager;
 import me.tianjx98.Jscrapy.utils.Monitor;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import java.util.TreeMap;
  * @Version 1.0
  */
 public abstract class BasicEngine {
-    protected static final Setting SETTINGS = Setting.SETTINGS;
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicEngine.class);
     /**
      * 启动时加载所有爬虫类放到该集合中
