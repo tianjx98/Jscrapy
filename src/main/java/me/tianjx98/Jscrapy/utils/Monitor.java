@@ -38,7 +38,7 @@ public class Monitor extends Thread {
     }
 
     private void printStatus() {
-        LOGGER.info("待发送请求数: " + engine.getScheduler().size());
-        LOGGER.info("已发送请求(未响应): " + engine.getDownloader().getSize());
+        //LOGGER.info("待发送请求数: " + engine.getScheduler().size());
+        //LOGGER.info("已发送请求(未响应): " + engine.getDownloader().getSize());
     }
 }

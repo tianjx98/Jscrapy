@@ -41,7 +41,7 @@ public abstract class AbstractEngine implements Engine {
     }
 
     protected Downloader createDownloader() {
-
+        return null;
     }
 
     protected abstract Scheduler createScheduler();

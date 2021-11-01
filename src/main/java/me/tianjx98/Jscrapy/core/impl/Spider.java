@@ -52,7 +52,7 @@ public abstract class Spider implements Serializable {
      * 默认从配置文件中加载所有爬虫类，启动爬虫
      */
     public static void start() {
-        new Engine().start();
+        //new Engine().start();
     }
 
     /**
@@ -61,7 +61,7 @@ public abstract class Spider implements Serializable {
      * @param clazz 爬虫类对象
      */
     public static void start(Class<? extends Spider> clazz) {
-        new Engine(clazz).start();
+        //new Engine(clazz).start();
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class Spider implements Serializable {
      * @param item 需要处理的Item对象
      */
     protected void process(Item item) {
-        engine.pipelineManager.processItem(item, this);
+        //engine.pipelineManager.processItem(item, this);
     }
 
     @Override

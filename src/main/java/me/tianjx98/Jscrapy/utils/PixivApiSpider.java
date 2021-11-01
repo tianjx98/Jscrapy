@@ -62,8 +62,8 @@ public class PixivApiSpider extends Spider {
         params.put("grant_type", "password");
         params.put("device_token", device_token);
         try {
-            params.put("username", SETTINGS.getString("username"));
-            params.put("password", SETTINGS.getString("password"));
+            //params.put("username", SETTINGS.getString("username"));
+            //params.put("password", SETTINGS.getString("password"));
         } catch (Exception e) {
             LOGGER.info("获取 test.scraper.pixiv 账号密码失败, 未登录");
             // 直接通过parse发出初始请求

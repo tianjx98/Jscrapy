@@ -5,7 +5,6 @@ import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +37,13 @@ public abstract class ImageDownloadPipeline extends Pipeline {
 
     @Override
     public Item processItem(Item item, Spider spider) {
-        if (isProcess(item)) {
-            List<Request> imageRequest = getImageRequest(item, spider);
-            this.engine.getScheduler().addRequest(imageRequest, request -> {
-                request.setCallback(this::saveImage);
-                request.setSpider(spider);
-            });
-        }
+        //if (isProcess(item)) {
+        //    List<Request> imageRequest = getImageRequest(item, spider);
+        //    this.engine.getScheduler().addRequest(imageRequest, request -> {
+        //        request.setCallback(this::saveImage);
+        //        request.setSpider(spider);
+        //    });
+        //}
         return item;
     }
 

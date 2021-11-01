@@ -67,13 +67,9 @@ public class PixivSpider extends Spider {
         String postKey = tag.attr("value");
         String token = response.css("#recaptcha-v3-token").attr("value");
         // 获取配置文件里面的用户名和密码
-        String username = SETTINGS.getString("username");
-        String password = SETTINGS.getString("password");
         HashMap<String, String> params = new HashMap<>();
         params.put("captcha", "");//添加参数
         params.put("g_recaptcha_response", "");
-        params.put("pixiv_id", username);
-        params.put("password", password);
         params.put("post_key", postKey);
         params.put("source", "pc");
         params.put("ref", "wwwtop_accounts_index");

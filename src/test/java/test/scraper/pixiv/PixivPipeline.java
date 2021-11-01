@@ -5,7 +5,6 @@ import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.utils.JSON;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class PixivPipeline extends Pipeline {
         // 设置json为易读的格式
         JSON.setPrettyFormat(true);
         // 从配置文件中获取存储路径
-        String path = Setting.SETTINGS.getString("storePath");
+        String path = "";
         try {
             File file = new File(path + "pixiv.json");
             File parentFile = file.getParentFile();

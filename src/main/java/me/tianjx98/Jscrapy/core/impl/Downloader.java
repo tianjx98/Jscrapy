@@ -2,7 +2,6 @@ package me.tianjx98.Jscrapy.core.impl;
 
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.client.HttpClient;
-import me.tianjx98.Jscrapy.utils.Setting;
 import org.apache.http.HttpResponse;
 import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import java.util.*;
  */
 public class Downloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(Downloader.class);
-    private static final Setting SETTINGS = Setting.SETTINGS;
 
     private final Timer timer = new Timer();
     private final Random random = new Random();

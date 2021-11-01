@@ -3,6 +3,9 @@ package me.tianjx98.Jscrapy.core.impl2;
 import me.tianjx98.Jscrapy.config.JscrapyConfig;
 import me.tianjx98.Jscrapy.core.AbstractEngine;
 import me.tianjx98.Jscrapy.core.Engine;
+import me.tianjx98.Jscrapy.core.impl.Scheduler;
+import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddlewareManager;
+import me.tianjx98.Jscrapy.pipeline.PipelineManager;
 
 /**
  * @author tianjx98
@@ -14,8 +17,28 @@ public class DefaultSpiderEngine extends AbstractEngine {
     }
 
     @Override
+    protected Scheduler createScheduler() {
+        return null;
+    }
+
+    @Override
+    protected PipelineManager createPipelineManager() {
+        return null;
+    }
+
+    @Override
+    protected SpiderMiddlewareManager createSpiderMiddlewareManager() {
+        return null;
+    }
+
+    @Override
+    protected void initEngine() {
+
+    }
+
+    @Override
     public Engine start() {
-        return this;
+        return null;
     }
 
     @Override
