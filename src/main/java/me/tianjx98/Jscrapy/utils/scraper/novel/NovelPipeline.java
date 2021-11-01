@@ -1,15 +1,7 @@
 package me.tianjx98.Jscrapy.utils.scraper.novel;
 
-import me.tianjx98.Jscrapy.core.Spider;
 import me.tianjx98.Jscrapy.pipeline.Item;
-import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.pipeline.impl.JsonWriterPipeline;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @ClassName NovelPipeline

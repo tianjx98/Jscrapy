@@ -1,7 +1,7 @@
 package me.tianjx98.Jscrapy.middleware.spider;
 
-import me.tianjx98.Jscrapy.core.BasicEngine;
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.BasicEngine;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 

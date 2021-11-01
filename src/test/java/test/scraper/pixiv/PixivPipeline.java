@@ -1,7 +1,7 @@
 package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 import me.tianjx98.Jscrapy.utils.JSON;

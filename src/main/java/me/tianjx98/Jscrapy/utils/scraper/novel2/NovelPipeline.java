@@ -1,6 +1,6 @@
 package me.tianjx98.Jscrapy.utils.scraper.novel2;
 
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.pipeline.Item;
 import me.tianjx98.Jscrapy.pipeline.Pipeline;
 

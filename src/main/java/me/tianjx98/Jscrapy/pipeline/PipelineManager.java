@@ -1,6 +1,6 @@
 package me.tianjx98.Jscrapy.pipeline;
 
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

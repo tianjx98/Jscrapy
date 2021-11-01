@@ -1,6 +1,6 @@
 package me.tianjx98.Jscrapy.utils.scraper.image_download;
 
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.pipeline.Item;
 

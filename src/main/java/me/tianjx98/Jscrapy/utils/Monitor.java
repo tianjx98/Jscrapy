@@ -1,6 +1,6 @@
 package me.tianjx98.Jscrapy.utils;
 
-import me.tianjx98.Jscrapy.core.BasicEngine;
+import me.tianjx98.Jscrapy.core.impl.BasicEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

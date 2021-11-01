@@ -1,7 +1,7 @@
 package me.tianjx98.Jscrapy.pipeline;
 
-import me.tianjx98.Jscrapy.core.BasicEngine;
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.BasicEngine;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 
 public abstract class Pipeline {
 

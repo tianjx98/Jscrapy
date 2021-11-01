@@ -1,4 +1,4 @@
-package me.tianjx98.Jscrapy.core;
+package me.tianjx98.Jscrapy.core.impl;
 
 import me.tianjx98.Jscrapy.duplicatefilter.DuplicateFilter;
 import me.tianjx98.Jscrapy.http.client.impl.AsyncHttpClient;

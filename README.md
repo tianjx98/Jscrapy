@@ -10,7 +10,7 @@
 
 ## 创建爬虫类爬取数据
 
-创建一个类继承`me.tianjx98.Jscrapy.core.Spider`就可以快速创建一个爬虫类
+创建一个类继承`me.tianjx98.Jscrapy.core.impl.Spider`就可以快速创建一个爬虫类
 
 简单使用可以参考`test.scraper.demo.TestSpider`
 

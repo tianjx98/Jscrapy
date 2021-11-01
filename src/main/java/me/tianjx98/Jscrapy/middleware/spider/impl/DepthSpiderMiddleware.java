@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.Jscrapy.config.JscrapyConfig;
-import me.tianjx98.Jscrapy.core.Spider;
+import me.tianjx98.Jscrapy.core.impl.Spider;
 import me.tianjx98.Jscrapy.http.Request;
 import me.tianjx98.Jscrapy.http.Response;
 import me.tianjx98.Jscrapy.middleware.spider.SpiderMiddleware;
