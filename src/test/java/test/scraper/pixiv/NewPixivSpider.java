@@ -1,10 +1,10 @@
 package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.tianjx98.Jscrapy.http.Request;
-import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.utils.JSON;
-import me.tianjx98.Jscrapy.utils.PixivApiSpider;
+import me.tianjx98.jscrapy.http.impl.Request;
+import me.tianjx98.jscrapy.http.impl.Response;
+import me.tianjx98.jscrapy.utils.JSON;
+import me.tianjx98.jscrapy.utils.PixivApiSpider;
 
 import java.util.List;
 

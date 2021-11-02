@@ -1,10 +1,10 @@
 package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
-import me.tianjx98.Jscrapy.core.impl.Spider;
-import me.tianjx98.Jscrapy.pipeline.Item;
-import me.tianjx98.Jscrapy.pipeline.Pipeline;
-import me.tianjx98.Jscrapy.utils.JSON;
+import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.pipeline.Item;
+import me.tianjx98.jscrapy.pipeline.Pipeline;
+import me.tianjx98.jscrapy.utils.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

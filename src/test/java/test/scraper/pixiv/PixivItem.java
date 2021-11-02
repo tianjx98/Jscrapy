@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import me.tianjx98.Jscrapy.http.Request;
-import me.tianjx98.Jscrapy.pipeline.Item;
+import me.tianjx98.jscrapy.http.impl.Request;
+import me.tianjx98.jscrapy.pipeline.Item;
 
 /**
  * @ClassName PixivItem

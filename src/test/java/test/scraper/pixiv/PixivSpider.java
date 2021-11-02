@@ -1,11 +1,11 @@
 package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.tianjx98.Jscrapy.core.impl.Spider;
-import me.tianjx98.Jscrapy.http.Request;
-import me.tianjx98.Jscrapy.http.Response;
-import me.tianjx98.Jscrapy.utils.JSON;
-import me.tianjx98.Jscrapy.utils.Out;
+import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.http.impl.Request;
+import me.tianjx98.jscrapy.http.impl.Response;
+import me.tianjx98.jscrapy.utils.JSON;
+import me.tianjx98.jscrapy.utils.Out;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

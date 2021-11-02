@@ -10,7 +10,7 @@
 
 ## 创建爬虫类爬取数据
 
-创建一个类继承`me.tianjx98.Jscrapy.core.impl.Spider`就可以快速创建一个爬虫类
+创建一个类继承`me.tianjx98.jscrapy.core.impl.Spider`就可以快速创建一个爬虫类
 
 简单使用可以参考`test.scraper.demo.TestSpider`
 
@@ -85,7 +85,7 @@ for (int i = 0; i < list.getLength(); i++) {
 
 ## 存储爬取的数据
 
-创建一个类继承`me.tianjx98.Jscrapy.pipeline.Pipeline`，然后将这个类的全限定名加入到配置文件中的itemPipelines中，在爬虫里面调用`process(item)`方法，就会把item交给这些pipeline处理
+创建一个类继承`me.tianjx98.jscrapy.pipeline.Pipeline`，然后将这个类的全限定名加入到配置文件中的itemPipelines中，在爬虫里面调用`process(item)`方法，就会把item交给这些pipeline处理
 
 可以参考`test.scraper.pixiv.PixivPipeline`
 
@@ -160,7 +160,7 @@ public class PixivItem extends Item {
 
 ### 下载图片
 
-下载图片可以直接继承`me.tianjx98.Jscrapy.pipeline.impl.ImageDownloadPipeline`
+下载图片可以直接继承`me.tianjx98.jscrapy.pipeline.impl.ImageDownloadPipeline`
 
 参考`test.scraper.pixiv.PixivImageDownloadPipeline`
 
@@ -190,7 +190,7 @@ public class PixivImageDownloadPipeline extends ImageDownloadPipeline {
 
 ## pixivApi使用
 
-创建一个继承`me.tianjx98.Jscrapy.utils.PixivApiSpider`就可以调用接口来获取信息
+创建一个继承`me.tianjx98.jscrapy.utils.PixivApiSpider`就可以调用接口来获取信息
 
 需要在配置文件中存储账号密码，然后会自动登录，之后才能使用api获取相关信息
 

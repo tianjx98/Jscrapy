@@ -1,8 +1,8 @@
 package test.scraper.novel;
 
-import me.tianjx98.Jscrapy.core.impl.Spider;
-import me.tianjx98.Jscrapy.http.Request;
-import me.tianjx98.Jscrapy.http.Response;
+import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.http.impl.Request;
+import me.tianjx98.jscrapy.http.impl.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

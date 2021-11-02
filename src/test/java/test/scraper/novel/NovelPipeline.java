@@ -1,8 +1,8 @@
 package test.scraper.novel;
 
-import me.tianjx98.Jscrapy.core.impl.Spider;
-import me.tianjx98.Jscrapy.pipeline.Item;
-import me.tianjx98.Jscrapy.pipeline.Pipeline;
+import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.pipeline.Item;
+import me.tianjx98.jscrapy.pipeline.Pipeline;
 
 import java.io.*;
 import java.nio.charset.Charset;

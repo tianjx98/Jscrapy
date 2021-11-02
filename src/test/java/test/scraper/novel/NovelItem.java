@@ -2,7 +2,7 @@ package test.scraper.novel;
 
 import lombok.Builder;
 import lombok.Data;
-import me.tianjx98.Jscrapy.pipeline.Item;
+import me.tianjx98.jscrapy.pipeline.Item;
 
 /**
  * @ClassName NovelItem
