@@ -17,6 +17,7 @@ import me.tianjx98.jscrapy.pipeline.PipelineManager;
 @Log4j2
 public abstract class AbstractEngine implements Engine {
     protected JscrapyConfig config;
+    protected volatile EngineState state;
     protected final List<Spider> spiders = new LinkedList<>();
     protected final Downloader downloader;
     /**
@@ -59,5 +60,23 @@ public abstract class AbstractEngine implements Engine {
     protected void initEngine() {
 
     }
+
+    @Override
+    public void pause() {
+        state = EngineState.PAUSE;
+    }
+
+    @Override
+    public void proceed() {
+        state = EngineState.RUN;
+        nextRequest();
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    protected abstract void nextRequest();
 
 }

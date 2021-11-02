@@ -16,6 +16,8 @@ public interface Engine {
      */
     void pause();
 
+    void proceed();
+
     /**
      * 关闭爬虫引擎
      */

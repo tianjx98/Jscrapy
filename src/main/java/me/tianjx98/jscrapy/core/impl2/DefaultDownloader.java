@@ -65,6 +65,17 @@ public class DefaultDownloader implements Downloader {
     }
 
     @Override
+    public boolean needBlock() {
+        // todo 实现并发控制
+        return false;
+    }
+
+    @Override
+    public void remove(Request request) {
+
+    }
+
+    @Override
     public long totalRequest() {
         return totalRequest.get();
     }

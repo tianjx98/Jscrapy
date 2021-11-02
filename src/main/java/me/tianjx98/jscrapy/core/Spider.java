@@ -18,7 +18,7 @@ public interface Spider {
 
     Flux<String> startUrls();
 
-    Flux<? extends Request> startRequests();
+    Flux<Request> startRequests();
 
     default Function<Response, Flux<Request>> startCallback() {
         return this::parse;

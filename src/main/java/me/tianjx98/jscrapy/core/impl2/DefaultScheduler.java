@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.core.Scheduler;
 import me.tianjx98.jscrapy.duplicatefilter.DuplicateFilter;
+import me.tianjx98.jscrapy.duplicatefilter.impl.BloomDuplicateFilter;
 import me.tianjx98.jscrapy.http.Request;
 import reactor.core.publisher.Flux;
 
@@ -15,8 +16,12 @@ import reactor.core.publisher.Flux;
  */
 @Log4j2
 public class DefaultScheduler implements Scheduler {
-    private DuplicateFilter duplicateFilter;
-    private Queue<Request> queue = new ConcurrentLinkedDeque<>();
+    private final DuplicateFilter duplicateFilter;
+    private final Queue<Request> queue = new ConcurrentLinkedDeque<>();
+
+    public DefaultScheduler() {
+        this.duplicateFilter = new BloomDuplicateFilter();
+    }
 
     @Override
     public void addRequests(Flux<Request> requests) {

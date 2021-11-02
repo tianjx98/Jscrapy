@@ -11,6 +11,10 @@ public interface Downloader {
 
     void download(Request request, Callback callback);
 
+    boolean needBlock();
+
+    void remove(Request request);
+
     long totalRequest();
 
     int currentRequest();

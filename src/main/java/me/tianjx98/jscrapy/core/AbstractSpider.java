@@ -1,4 +1,4 @@
-package me.tianjx98.jscrapy.core.impl2;
+package me.tianjx98.jscrapy.core;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,6 +9,7 @@ import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.Response;
 import me.tianjx98.jscrapy.http.impl.DefaultRequest;
+import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
 import reactor.core.publisher.Flux;
 
 /**
@@ -16,7 +17,7 @@ import reactor.core.publisher.Flux;
  * @date 2021/11/2 13:09
  */
 @Log4j2
-public class AbstractSpider implements Spider {
+public abstract class AbstractSpider implements Spider {
     protected final String name;
 
     protected AbstractSpider(String name) {
@@ -34,22 +35,16 @@ public class AbstractSpider implements Spider {
     }
 
     @Override
-    public Flux<? extends Request> startRequests() {
-        return startUrls().map(url -> {
-            try {
-                return Optional.of(new DefaultRequest(this, new URL(url), startCallback()));
-            } catch (MalformedURLException e) {
-                log.error("url格式错误", e);
-                // return Optional.empty();
-                return Optional.empty();
-            }
-        }).filter(Optional::isPresent).map(Optional::get);
-
+    public Flux<Request> startRequests() {
+        return startUrls().map(this::parseRequest).filter(Optional::isPresent).map(Optional::get);
     }
 
-
-    @Override
-    public Flux<Request> parse(Response response) {
-        return null;
+    private Optional<Request> parseRequest(String url) {
+        try {
+            return Optional.of(new DefaultRequest(this, new URL(url), startCallback()));
+        } catch (MalformedURLException e) {
+            log.error("url格式错误", e);
+            return Optional.empty();
+        }
     }
 }
