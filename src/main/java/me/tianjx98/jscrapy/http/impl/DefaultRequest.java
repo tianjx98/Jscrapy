@@ -16,10 +16,10 @@ import reactor.core.publisher.Flux;
 @Log4j2
 public class DefaultRequest implements Request {
 
-    private Spider spider;
-    private URL url;
-    private boolean isDoFilter;
-    private Function<Response, Flux<Request>> callback;
+    private final Spider spider;
+    private final URL url;
+    private boolean doFilter;
+    private final Function<Response, Flux<Request>> callback;
 
     private Map<String, String> headers;
     private Object requestBody;
@@ -42,7 +42,7 @@ public class DefaultRequest implements Request {
 
     @Override
     public boolean isDoFilter() {
-        return isDoFilter;
+        return doFilter;
     }
 
     @Override
@@ -67,6 +67,7 @@ public class DefaultRequest implements Request {
 
     @Override
     public okhttp3.Request buildRequest() {
+
         return new okhttp3.Request.Builder().url(url).build();
     }
 
