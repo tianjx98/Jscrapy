@@ -3,41 +3,84 @@ package test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.collect.Lists;
-import me.tianjx98.jscrapy.core.impl2.DefaultDownloader;
 import org.jetbrains.annotations.NotNull;
 
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
-import org.openqa.selenium.NotFoundException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 
 @Log4j2
 public class Test {
     OkHttpClient client = new OkHttpClient();
+    private AtomicInteger a = new AtomicInteger(0);
+    private AtomicInteger b = new AtomicInteger(0);
+    private AtomicInteger c = new AtomicInteger(0);
+
 
     public static void main(String[] args)
                     throws ExecutionException, InterruptedException, TimeoutException, IOException {
-        //testItf();
-        //final DefaultDownloader downloader = new DefaultDownloader();
+        OkHttpClient client = new OkHttpClient();
+    }
 
-        final Optional<Flux<String>> stringFlux = Optional.of("2").map(Flux::just);
+    private void test() throws IOException {
+        int n = 1000000000;
+        long start = System.currentTimeMillis();
+        testB(n);
+        System.out.println(System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
+        testC(n);
+        System.out.println(System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
+        testA(n);
+        System.out.println(System.currentTimeMillis() - start);
+    }
 
-        Flux.just(Lists.newArrayList("a")).map(n -> {
-            try {
-                final Optional<Integer> integer = Optional.of(Integer.valueOf(n.get(0)));
-                return integer;
-            } catch (NumberFormatException e) {
-                return Optional.empty();
+    private void testA(int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            wrapCallback(a).onResponse(null, null);
+        }
+    }
+
+    private void testB(int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            b.getAndIncrement();
+        }
+    }
+
+    private void testC(int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            new TestC().onResponse(null, null);
+        }
+    }
+
+    class TestC implements Callback {
+        @Override
+        public void onFailure(Call call, IOException e) {
+
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            c.getAndIncrement();
+        }
+    }
+
+
+    private Callback wrapCallback(AtomicInteger i) {
+        return new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {}
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                i.getAndIncrement();
             }
-        }).filter(Optional::isPresent).map(Optional::get);
-
+        };
     }
 
     private static void testItf() throws IOException {

@@ -26,4 +26,6 @@ public interface Request {
 
     Function<Response, Flux<Request>> getCallback();
 
+    okhttp3.Request buildRequest();
+
 }

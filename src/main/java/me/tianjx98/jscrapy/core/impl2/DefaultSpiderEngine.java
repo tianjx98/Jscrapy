@@ -1,6 +1,11 @@
 package me.tianjx98.jscrapy.core.impl2;
 
 
+import java.io.IOException;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.config.JscrapyConfig;
 import me.tianjx98.jscrapy.core.AbstractEngine;
@@ -12,11 +17,7 @@ import me.tianjx98.jscrapy.http.impl.DefaultResponse;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
-
-import java.io.IOException;
-import java.util.stream.Collectors;
 
 /**
  * @author tianjx98
@@ -24,6 +25,10 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 public class DefaultSpiderEngine extends AbstractEngine {
+
+    public DefaultSpiderEngine(JscrapyConfig config, List<Spider> spiders) {
+        super(config, spiders);
+    }
 
     public DefaultSpiderEngine(JscrapyConfig config) {
         super(config);
@@ -37,17 +42,26 @@ public class DefaultSpiderEngine extends AbstractEngine {
         return this;
     }
 
+    @Override
     protected void nextRequest() {
         // 如果没有请求了, 关闭引擎
         if (scheduler.isEmpty() && downloader.isEmpty()) {
             stop();
+            return;
         }
-        if (state == EngineState.RUN && !scheduler.isEmpty() && !downloader.needBlock()) {
-            final Request request = scheduler.nextRequest();
+        if (state == EngineState.RUN && !scheduler.isEmpty() && !downloader.needBlock(scheduler.peekRequest())) {
+            final Request request = scheduler.pollRequest();
             downloader.download(request, wrapCallback(request));
+            nextRequest();
         }
     }
 
+    /**
+     * 使用匿名类实现, 与new一个常规类没有任何性能差异
+     * 
+     * @param request 请求对象
+     * @return 包装后的回调对象, 每当请求完成或失败后会调用对应的回调方法
+     */
     private Callback wrapCallback(Request request) {
         return new Callback() {
             @Override
@@ -58,7 +72,7 @@ public class DefaultSpiderEngine extends AbstractEngine {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                log.debug("请求成功: {}", request);
+                log.info("请求成功: {}", request);
                 downloader.remove(request);
                 final Flux<Request> nextRequests = request.getCallback().apply(new DefaultResponse(request, response));
                 scheduler.addRequests(nextRequests);

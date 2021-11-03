@@ -3,7 +3,6 @@ package me.tianjx98.jscrapy.http.impl;
 import java.io.IOException;
 import java.util.Objects;
 
-import lombok.Builder;
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.Response;

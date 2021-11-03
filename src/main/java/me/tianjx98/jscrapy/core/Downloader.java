@@ -11,7 +11,7 @@ public interface Downloader {
 
     void download(Request request, Callback callback);
 
-    boolean needBlock();
+    boolean needBlock(Request request);
 
     void remove(Request request);
 

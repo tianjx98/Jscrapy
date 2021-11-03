@@ -1,35 +1,39 @@
 package me.tianjx98.jscrapy.http.client.impl;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.client.HttpClient;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
 
 /**
  * @author tianjx98
  * @date 2021/11/2 12:47
  */
+@Log4j2
 public class DefaultHttpClient implements HttpClient {
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client = new OkHttpClient.Builder().readTimeout(15, TimeUnit.SECONDS)
+                    .build();
 
     @Override
-    public void execute(me.tianjx98.jscrapy.http.Request request, Callback callback) {
+    public void execute(Request request, Callback callback) {
+        Call call = null;
         try {
-            Thread.sleep(1000);
-            callback.onResponse(null, new Response.Builder().addHeader("key", "val").build());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            call = client.newCall(request.buildRequest());
+            callback.onResponse(call, call.execute());
+        } catch (IOException e) {
+            log.error(e);
+            callback.onFailure(call, e);
         }
     }
 
     @Override
     public void executeAsync(Request request, Callback callback) {
-        final Call call = client.newCall(new okhttp3.Request.Builder().url(request.getUrl()).get().build());
-        call.enqueue(callback);
+        client.newCall(request.buildRequest()).enqueue(callback);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package me.tianjx98.jscrapy.core;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j2;
@@ -18,7 +17,7 @@ import me.tianjx98.jscrapy.pipeline.PipelineManager;
 public abstract class AbstractEngine implements Engine {
     protected JscrapyConfig config;
     protected volatile EngineState state;
-    protected final List<Spider> spiders = new LinkedList<>();
+    protected List<Spider> spiders;
     protected final Downloader downloader;
     /**
      * 调度器
@@ -31,13 +30,30 @@ public abstract class AbstractEngine implements Engine {
 
     protected final SpiderMiddlewareManager spiderMiddlewareManager;
 
-    protected AbstractEngine(JscrapyConfig config) {
+
+    protected AbstractEngine(JscrapyConfig config, List<Spider> spiders) {
         this.config = config;
+        this.spiders = spiders;
         this.downloader = createDownloader();
         this.scheduler = createScheduler();
         this.pipelineManager = createPipelineManager();
         this.spiderMiddlewareManager = createSpiderMiddlewareManager();
         initEngine();
+    }
+
+    protected AbstractEngine(JscrapyConfig config) {
+        this.config = config;
+        this.spiders = loadAllSpiders();
+        this.downloader = createDownloader();
+        this.scheduler = createScheduler();
+        this.pipelineManager = createPipelineManager();
+        this.spiderMiddlewareManager = createSpiderMiddlewareManager();
+        initEngine();
+    }
+
+    protected List<Spider> loadAllSpiders() {
+
+        return null;
     }
 
     protected Downloader createDownloader() {

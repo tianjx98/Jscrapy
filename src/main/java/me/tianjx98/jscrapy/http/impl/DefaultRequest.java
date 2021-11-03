@@ -64,4 +64,14 @@ public class DefaultRequest implements Request {
     public Function<Response, Flux<Request>> getCallback() {
         return callback;
     }
+
+    @Override
+    public okhttp3.Request buildRequest() {
+        return new okhttp3.Request.Builder().url(url).build();
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultRequest{" + "url=" + url + '}';
+    }
 }

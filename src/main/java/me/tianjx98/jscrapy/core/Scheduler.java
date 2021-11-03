@@ -11,7 +11,9 @@ public interface Scheduler {
 
     void addRequests(Flux<Request> requests);
 
-    Request nextRequest();
+    Request pollRequest();
+
+    Request peekRequest();
 
     boolean isEmpty();
 

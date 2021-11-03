@@ -25,17 +25,23 @@ public class DefaultScheduler implements Scheduler {
 
     @Override
     public void addRequests(Flux<Request> requests) {
-        requests.filter(request -> request.isDoFilter() && duplicateFilter.isDuplicate(request)).subscribe(queue::add);
+        requests.filter(request -> !(request.isDoFilter() && duplicateFilter.isDuplicate(request))).log()
+                        .subscribe(queue::add);
     }
 
     @Override
-    public Request nextRequest() {
+    public Request pollRequest() {
         return queue.poll();
     }
 
     @Override
+    public Request peekRequest() {
+        return queue.peek();
+    }
+
+    @Override
     public boolean isEmpty() {
-        return false;
+        return queue.isEmpty();
     }
 
     @Override
