@@ -30,6 +30,14 @@ public class DefaultScheduler implements Scheduler {
     }
 
     @Override
+    public void addRequest(Request request) {
+        if (request.isDoFilter() && duplicateFilter.isDuplicate(request)) {
+            return;
+        }
+        queue.add(request);
+    }
+
+    @Override
     public Request pollRequest() {
         return queue.poll();
     }

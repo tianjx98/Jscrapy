@@ -1,10 +1,11 @@
 package me.tianjx98.jscrapy.pipeline.impl;
 
-import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.http.impl.Request;
 import me.tianjx98.jscrapy.http.impl.Response;
 import me.tianjx98.jscrapy.pipeline.Item;
 import me.tianjx98.jscrapy.pipeline.Pipeline;
+import me.tianjx98.jscrapy.utils.scraper.image_download.ImageItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +26,7 @@ import java.util.UUID;
  * @Date 2019/7/25 15:45
  * @Version 1.0s
  */
-public abstract class ImageDownloadPipeline extends Pipeline {
-    private static Logger LOGGER = LoggerFactory.getLogger(ImageDownloadPipeline.class);
-    //private String imageStore = Setting.SETTINGS.getString("imageStore");
+public abstract class ImageDownloadPipeline implements Pipeline<ImageItem> {
     private String imageStore = "images/";
 
     @Override
@@ -36,7 +35,7 @@ public abstract class ImageDownloadPipeline extends Pipeline {
     }
 
     @Override
-    public Item processItem(Item item, Spider spider) {
+    public ImageItem processItem(ImageItem item, Spider spider) {
         //if (isProcess(item)) {
         //    List<Request> imageRequest = getImageRequest(item, spider);
         //    this.engine.getScheduler().addRequest(imageRequest, request -> {
@@ -74,7 +73,6 @@ public abstract class ImageDownloadPipeline extends Pipeline {
         path.getParent().toFile().mkdirs();
         // 如果文件不存在就创建文件，已经存在就不会创建
         try {
-            LOGGER.info("图片下载到：" + path);
             File file = path.toFile();
             file.createNewFile();
             try (FileOutputStream out = new FileOutputStream(file)) {

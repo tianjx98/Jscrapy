@@ -3,6 +3,7 @@ package me.tianjx98.jscrapy.http;
 import java.util.Map;
 import java.util.function.Function;
 
+import me.tianjx98.jscrapy.core.Element;
 import me.tianjx98.jscrapy.core.Spider;
 import reactor.core.publisher.Flux;
 
@@ -10,7 +11,7 @@ import reactor.core.publisher.Flux;
  * @author tianjx98
  * @date 2021/11/2 14:52
  */
-public interface Request {
+public interface Request extends Element {
 
     String getDomain();
 
@@ -24,7 +25,7 @@ public interface Request {
 
     Spider getSpider();
 
-    Function<Response, Flux<Request>> getCallback();
+    Function<Response, Flux<? extends Element>> getCallback();
 
     okhttp3.Request buildRequest();
 

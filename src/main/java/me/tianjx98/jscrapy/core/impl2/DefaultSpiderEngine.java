@@ -8,12 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.config.JscrapyConfig;
-import me.tianjx98.jscrapy.core.AbstractEngine;
-import me.tianjx98.jscrapy.core.Engine;
-import me.tianjx98.jscrapy.core.EngineState;
-import me.tianjx98.jscrapy.core.Spider;
+import me.tianjx98.jscrapy.core.*;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.impl.DefaultResponse;
+import me.tianjx98.jscrapy.pipeline.Item;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -30,8 +28,9 @@ public class DefaultSpiderEngine extends AbstractEngine {
         super(config, spiders);
     }
 
-    public DefaultSpiderEngine(JscrapyConfig config) {
-        super(config);
+    public DefaultSpiderEngine(JscrapyConfig config, String classPackage)
+                    throws InstantiationException, IllegalAccessException {
+        super(config, classPackage);
     }
 
     @Override
@@ -51,8 +50,10 @@ public class DefaultSpiderEngine extends AbstractEngine {
         }
         if (state == EngineState.RUN && !scheduler.isEmpty() && !downloader.needBlock(scheduler.peekRequest())) {
             final Request request = scheduler.pollRequest();
-            downloader.download(request, wrapCallback(request));
-            nextRequest();
+            if (request != null) {
+                downloader.download(request, wrapCallback(request));
+                nextRequest();
+            }
         }
     }
 
@@ -74,9 +75,19 @@ public class DefaultSpiderEngine extends AbstractEngine {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 log.info("请求成功: {}", request);
                 downloader.remove(request);
-                final Flux<Request> nextRequests = request.getCallback().apply(new DefaultResponse(request, response));
-                scheduler.addRequests(nextRequests);
+                final Flux<? extends Element> elements =
+                                request.getCallback().apply(new DefaultResponse(request, response));
+                elements.subscribe(this::subscribeElement);
                 nextRequest();
+            }
+
+            private void subscribeElement(Element element) {
+                if (element instanceof Request) {
+                    scheduler.addRequest((Request) element);
+                }
+                if (pipelineManager != null && element instanceof Item) {
+                    pipelineManager.processItem((Item) element, request.getSpider());
+                }
             }
         };
     }

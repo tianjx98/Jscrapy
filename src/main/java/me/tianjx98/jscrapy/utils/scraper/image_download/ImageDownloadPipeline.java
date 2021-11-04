@@ -1,6 +1,6 @@
 package me.tianjx98.jscrapy.utils.scraper.image_download;
 
-import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.http.impl.Request;
 import me.tianjx98.jscrapy.pipeline.Item;
 
@@ -21,12 +21,13 @@ public class ImageDownloadPipeline extends me.tianjx98.jscrapy.pipeline.impl.Ima
 
     @Override
     protected List<Request> getImageRequest(Item item, Spider spider) {
-        System.out.println(item);
-        ImageItem imageItem = (ImageItem) item;
-        return Request.builder(imageItem.getUrl(), spider)
-                .addData("name", imageItem.name)
-                .build()
-                .asList();
+        //System.out.println(item);
+        //ImageItem imageItem = (ImageItem) item;
+        //return Request.builder(imageItem.getUrl(), spider)
+        //        .addData("name", imageItem.name)
+        //        .build()
+        //        .asList();
+        return null;
     }
 
     @Override

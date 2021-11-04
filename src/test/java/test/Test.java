@@ -1,6 +1,8 @@
 package test;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -12,6 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.GroupedFlux;
+import test.engine.TestItem;
+import test.engine.TestPipeline;
+import test.engine.TestSpider;
 
 
 @Log4j2
@@ -24,7 +30,25 @@ public class Test {
 
     public static void main(String[] args)
                     throws ExecutionException, InterruptedException, TimeoutException, IOException {
-        OkHttpClient client = new OkHttpClient();
+        //final Flux<? extends Number> flux = test2();
+        ////flux.groupBy(Number::getClass).;
+        //
+        //final Flux<GroupedFlux<Character, String>> groupedFluxFlux = Flux.just("a1", "b1", "c1", "a2", "b2", "c2")
+        //        .groupBy(s -> s.charAt(0));
+        //final Flux<String> stringFlux = groupedFluxFlux.concatMap(groupedFlux -> groupedFlux
+        //        .startWith("Group " + groupedFlux.key()));
+        //
+        //groupedFluxFlux.subscribe(System.out::println);
+        final TestItem testItem = new TestItem("1");
+        final TestPipeline pipeline = new TestPipeline();
+        final Type genericInterface = pipeline.getClass().getGenericInterfaces()[0];
+        System.out.println(genericInterface);
+    }
+
+    private static Flux<? extends Number> test2() {
+        final Flux<Integer> f1 = Flux.just(1);
+        final Flux<Long> f2 = Flux.just(2L);
+        return Flux.concat(f1, f2);
     }
 
     private void test() throws IOException {

@@ -1,6 +1,7 @@
 package me.tianjx98.jscrapy.pipeline;
 
 import lombok.Data;
+import me.tianjx98.jscrapy.core.Element;
 
 /**
  * 如果需要将数据经过pipeline处理的话
@@ -11,6 +12,6 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class Item {
+public class Item implements Element {
 
 }

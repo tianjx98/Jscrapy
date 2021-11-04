@@ -4,10 +4,13 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.config.JscrapyConfig;
+import me.tianjx98.jscrapy.core.annotation.ScraperElement;
 import me.tianjx98.jscrapy.core.impl2.DefaultDownloader;
 import me.tianjx98.jscrapy.core.impl2.DefaultScheduler;
 import me.tianjx98.jscrapy.middleware.spider.SpiderMiddlewareManager;
+import me.tianjx98.jscrapy.pipeline.Pipeline;
 import me.tianjx98.jscrapy.pipeline.PipelineManager;
+import me.tianjx98.jscrapy.utils.ClassUtil;
 
 /**
  * @author tianjx98
@@ -26,9 +29,9 @@ public abstract class AbstractEngine implements Engine {
     /**
      * 处理Item的管道，用于存储数据
      */
-    protected final PipelineManager pipelineManager;
+    protected PipelineManager pipelineManager;
 
-    protected final SpiderMiddlewareManager spiderMiddlewareManager;
+    protected SpiderMiddlewareManager spiderMiddlewareManager;
 
 
     protected AbstractEngine(JscrapyConfig config, List<Spider> spiders) {
@@ -36,24 +39,23 @@ public abstract class AbstractEngine implements Engine {
         this.spiders = spiders;
         this.downloader = createDownloader();
         this.scheduler = createScheduler();
-        this.pipelineManager = createPipelineManager();
-        this.spiderMiddlewareManager = createSpiderMiddlewareManager();
         initEngine();
     }
 
-    protected AbstractEngine(JscrapyConfig config) {
+    protected AbstractEngine(JscrapyConfig config, String classPackage)
+                    throws InstantiationException, IllegalAccessException {
         this.config = config;
-        this.spiders = loadAllSpiders();
+        final ClassUtil classUtil = ClassUtil.of(classPackage);
+        this.spiders = loadAllSpiders(classUtil);
         this.downloader = createDownloader();
         this.scheduler = createScheduler();
-        this.pipelineManager = createPipelineManager();
+        this.pipelineManager = createPipelineManager(classUtil);
         this.spiderMiddlewareManager = createSpiderMiddlewareManager();
         initEngine();
     }
 
-    protected List<Spider> loadAllSpiders() {
-
-        return null;
+    protected List<Spider> loadAllSpiders(ClassUtil classUtil) throws InstantiationException, IllegalAccessException {
+        return classUtil.getInstanceByClassAndAnnotation(Spider.class, ScraperElement.class);
     }
 
     protected Downloader createDownloader() {
@@ -64,9 +66,9 @@ public abstract class AbstractEngine implements Engine {
         return new DefaultScheduler();
     }
 
-    protected PipelineManager createPipelineManager() {
-
-        return null;
+    protected PipelineManager createPipelineManager(ClassUtil classUtil)
+                    throws InstantiationException, IllegalAccessException {
+        return new PipelineManager(classUtil.getInstanceByClassAndAnnotation(Pipeline.class, ScraperElement.class));
     }
 
     protected SpiderMiddlewareManager createSpiderMiddlewareManager() {

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import lombok.extern.log4j.Log4j2;
+import me.tianjx98.jscrapy.core.Element;
 import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.Response;
@@ -19,12 +20,12 @@ public class DefaultRequest implements Request {
     private final Spider spider;
     private final URL url;
     private boolean doFilter;
-    private final Function<Response, Flux<Request>> callback;
+    private final Function<Response, Flux<? extends Element>> callback;
 
     private Map<String, String> headers;
     private Object requestBody;
 
-    public DefaultRequest(Spider spider, URL url, Function<Response, Flux<Request>> callback) {
+    public DefaultRequest(Spider spider, URL url, Function<Response, Flux<? extends Element>> callback) {
         this.spider = spider;
         this.url = url;
         this.callback = callback;
@@ -61,7 +62,7 @@ public class DefaultRequest implements Request {
     }
 
     @Override
-    public Function<Response, Flux<Request>> getCallback() {
+    public Function<Response, Flux<? extends Element>> getCallback() {
         return callback;
     }
 

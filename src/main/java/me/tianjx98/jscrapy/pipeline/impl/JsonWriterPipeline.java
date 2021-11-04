@@ -1,7 +1,7 @@
 package me.tianjx98.jscrapy.pipeline.impl;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
-import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.pipeline.Item;
 import me.tianjx98.jscrapy.pipeline.Pipeline;
 import me.tianjx98.jscrapy.utils.JSON;
@@ -19,7 +19,7 @@ import java.io.IOException;
  * @Date 2019/7/23 16:32
  * @Version 1.0
  */
-public abstract class JsonWriterPipeline extends Pipeline {
+public abstract class JsonWriterPipeline implements Pipeline<Item> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonWriterPipeline.class);
 
     SequenceWriter writer;

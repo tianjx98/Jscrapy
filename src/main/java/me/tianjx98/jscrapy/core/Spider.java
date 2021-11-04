@@ -20,11 +20,11 @@ public interface Spider {
 
     Flux<Request> startRequests();
 
-    default Function<Response, Flux<Request>> startCallback() {
+    default Function<Response, Flux<? extends Element>> startCallback() {
         return this::parse;
     }
 
-    Flux<Request> parse(Response response);
+    Flux<? extends Element> parse(Response response);
 
     default Map<String, String> getDefaultHeaders() {
         return Collections.emptyMap();

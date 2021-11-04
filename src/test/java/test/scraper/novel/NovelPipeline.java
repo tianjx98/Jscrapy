@@ -1,14 +1,13 @@
 package test.scraper.novel;
 
-import me.tianjx98.jscrapy.core.impl.Spider;
-import me.tianjx98.jscrapy.pipeline.Item;
-import me.tianjx98.jscrapy.pipeline.Pipeline;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+import me.tianjx98.jscrapy.core.Spider;
+import me.tianjx98.jscrapy.pipeline.Pipeline;
 
 /**
  * @ClassName NovelPipeline
@@ -16,33 +15,31 @@ import java.util.TreeMap;
  * @Author tianjx98
  * @Date 2019-08-18 16:01
  */
-public class NovelPipeline extends Pipeline {
+public class NovelPipeline implements Pipeline<NovelItem> {
 
     // 键为小说名,后面的map键为章节数
     HashMap<String, TreeMap<Integer, NovelItem>> novels;
 
     @Override
-    protected void open() {
+    public void open() {
         novels = new HashMap<>();
     }
 
     @Override
-    protected Item processItem(Item item, Spider spider) {
-        if (item instanceof NovelItem) {
-            NovelItem novelItem = (NovelItem) item;
-            System.out.println("downloaded: " + novelItem.chapterName);
-            TreeMap<Integer, NovelItem> novel = novels.get(novelItem.novelName);
-            if (novel == null) {
-                novel = new TreeMap<>();
-                novels.put(novelItem.getNovelName(), novel);
-            }
-            novel.put(novelItem.chapterNum, novelItem);
+    public NovelItem processItem(NovelItem item, Spider spider) {
+        NovelItem novelItem = (NovelItem) item;
+        System.out.println("downloaded: " + novelItem.chapterName);
+        TreeMap<Integer, NovelItem> novel = novels.get(novelItem.novelName);
+        if (novel == null) {
+            novel = new TreeMap<>();
+            novels.put(novelItem.getNovelName(), novel);
         }
+        novel.put(novelItem.chapterNum, novelItem);
         return item;
     }
 
     @Override
-    protected void close() {
+    public void close() {
         // 关闭时将小说存储到本地
         Charset charset = Charset.defaultCharset();
         for (Map.Entry<String, TreeMap<Integer, NovelItem>> entry : novels.entrySet()) {

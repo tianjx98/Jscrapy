@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 public interface Scheduler {
 
     void addRequests(Flux<Request> requests);
+    void addRequest(Request requests);
 
     Request pollRequest();
 

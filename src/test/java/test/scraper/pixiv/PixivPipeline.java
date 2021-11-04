@@ -1,7 +1,7 @@
 package test.scraper.pixiv;
 
 import com.fasterxml.jackson.databind.SequenceWriter;
-import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.pipeline.Item;
 import me.tianjx98.jscrapy.pipeline.Pipeline;
 import me.tianjx98.jscrapy.utils.JSON;
@@ -20,7 +20,7 @@ import java.io.IOException;
  * @Date 2019/7/23 16:32
  * @Version 1.0
  */
-public class PixivPipeline extends Pipeline {
+public class PixivPipeline implements Pipeline<Item> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PixivPipeline.class);
 
     SequenceWriter writer;

@@ -1,6 +1,6 @@
 package test.scraper.pixiv;
 
-import me.tianjx98.jscrapy.core.impl.Spider;
+import me.tianjx98.jscrapy.core.Spider;
 import me.tianjx98.jscrapy.http.impl.Request;
 import me.tianjx98.jscrapy.pipeline.Item;
 import me.tianjx98.jscrapy.pipeline.impl.ImageDownloadPipeline;
