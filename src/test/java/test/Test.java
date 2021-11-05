@@ -30,7 +30,7 @@ public class Test {
 
     public static void main(String[] args)
                     throws ExecutionException, InterruptedException, TimeoutException, IOException {
-        //final Flux<? extends Number> flux = test2();
+        //final Flux< ? extends Number> flux = test2();
         ////flux.groupBy(Number::getClass).;
         //
         //final Flux<GroupedFlux<Character, String>> groupedFluxFlux = Flux.just("a1", "b1", "c1", "a2", "b2", "c2")

@@ -25,7 +25,7 @@ public class DefaultScheduler implements Scheduler {
 
     @Override
     public void addRequests(Flux<Request> requests) {
-        requests.filter(request -> !(request.isDoFilter() && duplicateFilter.isDuplicate(request))).log()
+        requests.filter(request -> !(request.isDoFilter() && duplicateFilter.isDuplicate(request)))
                         .subscribe(queue::add);
     }
 

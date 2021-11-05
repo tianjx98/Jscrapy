@@ -68,14 +68,14 @@ public class DefaultDownloader implements Downloader {
 
     @Override
     public boolean needBlock(Request request) {
-        if (currentRequest.get() > concurrentRequests) {
+        if (currentRequest.get() >= concurrentRequests) {
             return true;
         }
         final Set<Request> requests = crawling.get(request.getDomain());
         if (requests == null) {
             return false;
         }
-        return requests.size() > concurrentRequestsPerDomain;
+        return requests.size() >= concurrentRequestsPerDomain;
     }
 
     @Override

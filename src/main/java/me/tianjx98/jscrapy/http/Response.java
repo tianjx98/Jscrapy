@@ -1,6 +1,5 @@
 package me.tianjx98.jscrapy.http;
 
-import javax.xml.bind.Element;
 
 /**
  * @author tianjx98
