@@ -7,7 +7,7 @@ import me.tianjx98.jscrapy.config.JscrapyConfig;
 import me.tianjx98.jscrapy.core.annotation.ScraperElement;
 import me.tianjx98.jscrapy.core.impl2.DefaultDownloader;
 import me.tianjx98.jscrapy.core.impl2.DefaultScheduler;
-import me.tianjx98.jscrapy.middleware.spider.SpiderMiddlewareManager;
+//import me.tianjx98.jscrapy.middleware.spider.SpiderMiddlewareManager;
 import me.tianjx98.jscrapy.pipeline.Pipeline;
 import me.tianjx98.jscrapy.pipeline.PipelineManager;
 import me.tianjx98.jscrapy.utils.ClassUtil;
@@ -31,7 +31,7 @@ public abstract class AbstractEngine implements Engine {
      */
     protected PipelineManager pipelineManager;
 
-    protected SpiderMiddlewareManager spiderMiddlewareManager;
+    //protected SpiderMiddlewareManager spiderMiddlewareManager;
 
 
     protected AbstractEngine(JscrapyConfig config, List<Spider> spiders) {
@@ -50,7 +50,7 @@ public abstract class AbstractEngine implements Engine {
         this.downloader = createDownloader();
         this.scheduler = createScheduler();
         this.pipelineManager = createPipelineManager(classUtil);
-        this.spiderMiddlewareManager = createSpiderMiddlewareManager();
+        //this.spiderMiddlewareManager = createSpiderMiddlewareManager();
         initEngine();
     }
 
@@ -71,9 +71,9 @@ public abstract class AbstractEngine implements Engine {
         return new PipelineManager(classUtil.getInstanceByClassAndAnnotation(Pipeline.class, ScraperElement.class));
     }
 
-    protected SpiderMiddlewareManager createSpiderMiddlewareManager() {
-        return null;
-    }
+    //protected SpiderMiddlewareManager createSpiderMiddlewareManager() {
+    //    return null;
+    //}
 
     protected void initEngine() {
 
