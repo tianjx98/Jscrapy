@@ -73,7 +73,7 @@ public class DefaultSpiderEngine extends AbstractEngine {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                log.info("请求成功: {}", request);
+                log.trace("请求成功: {}", request);
                 downloader.remove(request);
                 final Flux<? extends Element> elements =
                                 request.getCallback().apply(new DefaultResponse(request, response));

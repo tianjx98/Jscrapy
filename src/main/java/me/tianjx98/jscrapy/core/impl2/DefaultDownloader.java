@@ -24,18 +24,18 @@ public class DefaultDownloader implements Downloader {
     /**
      * 请求的最大并发数, 默认最多只能同时发送16个请求
      */
-    private int concurrentRequests = 16;
+    private int concurrentRequests = 100;
     /**
      * 每一个域名下的最大并发数, 默认为8
      */
-    private int concurrentRequestsPerDomain = 8;
+    private int concurrentRequestsPerDomain = 100;
 
     /**
      * TODO 随机延迟(ms)
      */
     private int randomDownloadDelay;
 
-    private HttpClient client;
+    private final HttpClient client;
 
     /**
      * 已经发送的请求
@@ -63,7 +63,7 @@ public class DefaultDownloader implements Downloader {
         requests.add(request);
         client.executeAsync(request, callback);
         currentRequest.incrementAndGet();
-        log.info("当前 {} 个请求正在下载", currentRequest.get());
+        log.debug("当前 {} 个请求正在下载", currentRequest.get());
     }
 
     @Override
