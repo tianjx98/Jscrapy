@@ -1,7 +1,7 @@
 package me.tianjx98.jscrapy.core;
 
 /**
- * @author 18872653103
+ * @author tianjx98
  * @date 2021/7/26 19:24
  */
 public interface Engine {
@@ -10,6 +10,8 @@ public interface Engine {
      * 启动爬虫引擎
      */
     Engine start();
+
+    void nextRequest();
 
     /**
      * 暂停爬虫引擎

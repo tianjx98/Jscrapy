@@ -25,7 +25,7 @@ public class PipelineManager {
     public PipelineManager(List<Pipeline> pipelines) {
         this.pipelines = pipelines;
         this.pipelineMap = pipelines.stream()
-                        .collect(Collectors.groupingBy(Pipeline::getFirstInterfaceActualTypeArgument));
+                .collect(Collectors.groupingBy(Pipeline::getFirstInterfaceActualTypeArgument));
     }
 
     /**
@@ -38,7 +38,7 @@ public class PipelineManager {
     /**
      * 把Item给pipeline逐个处理
      *
-     * @param item
+     * @param item 数据对象
      */
     public Item processItem(Item item, Spider spider) {
         Object obj = item;
@@ -53,5 +53,7 @@ public class PipelineManager {
     /**
      * 调用所有pipeline的close方法
      */
-    public void close() {}
+    public void close() {
+        pipelines.forEach(Pipeline::close);
+    }
 }

@@ -67,5 +67,9 @@ public class TestSpider extends AbstractSpider {
         return Flux.empty();
     }
 
+    public static void main(String[] args) {
+
+    }
+
 
 }

@@ -85,7 +85,7 @@ public class DefaultRequest implements Request {
     public okhttp3.Request buildRequest() {
         final okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
         if (requestBuilder == null) {
-            return builder.build();
+            return builder.url(urlObject).get().build();
         }
         return requestBuilder.apply(builder, this).build();
     }

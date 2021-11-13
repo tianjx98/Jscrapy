@@ -28,6 +28,11 @@ public interface GenericUtil {
 
     }
 
+    /**
+     * 得到第一个接口实际类型参数
+     *
+     * @return {@link Class}<{@link ?}>
+     */
     default Class<?> getFirstInterfaceActualTypeArgument() {
         final Type type = getClass().getGenericInterfaces()[0];
         if (type instanceof ParameterizedType) {

@@ -102,6 +102,6 @@ public class DefaultDownloader implements Downloader {
 
     @Override
     public void close() {
-
+        client.close();
     }
 }

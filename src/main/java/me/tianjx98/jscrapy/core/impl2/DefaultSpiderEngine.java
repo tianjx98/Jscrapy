@@ -29,7 +29,7 @@ public class DefaultSpiderEngine extends AbstractEngine {
     }
 
     public DefaultSpiderEngine(JscrapyConfig config, String classPackage)
-                    throws InstantiationException, IllegalAccessException {
+            throws InstantiationException, IllegalAccessException {
         super(config, classPackage);
     }
 
@@ -42,7 +42,7 @@ public class DefaultSpiderEngine extends AbstractEngine {
     }
 
     @Override
-    protected void nextRequest() {
+    public void nextRequest() {
         // 如果没有请求了, 关闭引擎
         if (scheduler.isEmpty() && downloader.isEmpty()) {
             stop();
@@ -59,7 +59,7 @@ public class DefaultSpiderEngine extends AbstractEngine {
 
     /**
      * 使用匿名类实现, 与new一个常规类没有任何性能差异
-     * 
+     *
      * @param request 请求对象
      * @return 包装后的回调对象, 每当请求完成或失败后会调用对应的回调方法
      */
@@ -76,8 +76,10 @@ public class DefaultSpiderEngine extends AbstractEngine {
                 log.trace("请求成功: {}", request);
                 downloader.remove(request);
                 final Flux<? extends Element> elements =
-                                request.getCallback().apply(new DefaultResponse(request, response));
-                elements.subscribe(this::subscribeElement);
+                        request.getCallback().apply(new DefaultResponse(request, response));
+                if (elements != null) {
+                    elements.subscribe(this::subscribeElement);
+                }
                 nextRequest();
             }
 

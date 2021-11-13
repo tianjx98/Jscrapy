@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
 import me.tianjx98.jscrapy.http.Request;
 import me.tianjx98.jscrapy.http.client.HttpClient;
+import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -17,7 +18,7 @@ import okhttp3.OkHttpClient;
 @Log4j2
 public class DefaultHttpClient implements HttpClient {
     OkHttpClient client = new OkHttpClient.Builder().readTimeout(15, TimeUnit.SECONDS)
-                    .build();
+            .build();
 
     @Override
     public void execute(Request request, Callback callback) {
@@ -37,5 +38,16 @@ public class DefaultHttpClient implements HttpClient {
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        try {
+            client.dispatcher().executorService().shutdown();
+            client.connectionPool().evictAll();
+            final Cache cache = client.cache();
+            if (cache != null) {
+                cache.close();
+            }
+        } catch (IOException e) {
+            log.error("请求客户端关闭失败", e);
+        }
+    }
 }

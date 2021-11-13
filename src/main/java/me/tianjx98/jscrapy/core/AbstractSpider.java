@@ -11,14 +11,4 @@ import reactor.core.publisher.Flux;
  */
 @Log4j2
 public abstract class AbstractSpider implements Spider {
-
-    @Override
-    public Flux<String> startUrls() {
-        return Flux.empty();
-    }
-
-    @Override
-    public Flux<Request> startRequests() {
-        return startUrls().map(url -> new DefaultRequest(this, url, startCallback()));
-    }
 }
