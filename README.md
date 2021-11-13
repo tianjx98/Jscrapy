@@ -3,8 +3,8 @@
 
 
 # 快速使用
-```xml
 添加依赖
+```xml
 <dependency>
     <groupId>cn.tianjx98</groupId>
     <artifactId>jscrapy</artifactId>
