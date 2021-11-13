@@ -3,6 +3,14 @@
 
 
 # 快速使用
+```xml
+添加依赖
+<dependency>
+    <groupId>cn.tianjx98</groupId>
+    <artifactId>jscrapy</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ```java
 import lombok.extern.log4j.Log4j2;
