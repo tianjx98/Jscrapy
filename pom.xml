@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.tianjx98</groupId>
-    <artifactId>Jscrapy</artifactId>
+    <artifactId>jscrapy</artifactId>
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,7 +82,7 @@
         <repository>
             <id>github</id>
             <name>GitHub tianjx98 Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/tianjx98/repository</url>
+            <url>https://maven.pkg.github.com/tianjx98/jscrapy</url>
         </repository>
     </distributionManagement>
 
