@@ -1,10 +1,10 @@
 package test.engine;
 
 import lombok.extern.log4j.Log4j2;
-import me.tianjx98.jscrapy.core.Spider;
-import me.tianjx98.jscrapy.core.annotation.Order;
-import me.tianjx98.jscrapy.core.annotation.ScraperElement;
-import me.tianjx98.jscrapy.pipeline.Pipeline;
+import cn.tianjx98.jscrapy.core.Spider;
+import cn.tianjx98.jscrapy.core.annotation.Order;
+import cn.tianjx98.jscrapy.core.annotation.ScraperElement;
+import cn.tianjx98.jscrapy.pipeline.Pipeline;
 
 /**
  * @author tianjx98

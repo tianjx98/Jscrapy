@@ -1,17 +1,19 @@
 package test.example;
 
-import me.tianjx98.jscrapy.core.Element;
-import me.tianjx98.jscrapy.core.Spider;
-import me.tianjx98.jscrapy.core.SpiderEngine;
-import me.tianjx98.jscrapy.core.annotation.ScraperElement;
-import me.tianjx98.jscrapy.http.Response;
+import lombok.extern.log4j.Log4j2;
+import cn.tianjx98.jscrapy.core.Element;
+import cn.tianjx98.jscrapy.core.Spider;
+import cn.tianjx98.jscrapy.core.SpiderEngine;
+import cn.tianjx98.jscrapy.core.annotation.ScraperElement;
+import cn.tianjx98.jscrapy.http.Response;
 import reactor.core.publisher.Flux;
 
 @ScraperElement
+@Log4j2
 public class SimpleSpider implements Spider {
     @Override
     public String getName() {
-        return "demoSpider";
+        return "simpleSpider";
     }
 
     @Override
@@ -22,7 +24,7 @@ public class SimpleSpider implements Spider {
     @Override
     public Flux<Element> parse(Response response) {
         System.out.println(response.getBody());
-        return null;
+        return Flux.empty();
     }
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException {

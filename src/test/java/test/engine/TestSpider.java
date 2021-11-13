@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.extern.log4j.Log4j2;
-import me.tianjx98.jscrapy.core.AbstractSpider;
-import me.tianjx98.jscrapy.core.Element;
-import me.tianjx98.jscrapy.core.annotation.ScraperElement;
-import me.tianjx98.jscrapy.http.Request;
-import me.tianjx98.jscrapy.http.Response;
-import me.tianjx98.jscrapy.http.impl.DefaultRequest;
+import cn.tianjx98.jscrapy.core.AbstractSpider;
+import cn.tianjx98.jscrapy.core.Element;
+import cn.tianjx98.jscrapy.core.annotation.ScraperElement;
+import cn.tianjx98.jscrapy.http.Request;
+import cn.tianjx98.jscrapy.http.Response;
+import cn.tianjx98.jscrapy.http.impl.DefaultRequest;
 import reactor.core.publisher.Flux;
 
 /**

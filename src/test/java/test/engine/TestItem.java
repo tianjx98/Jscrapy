@@ -1,7 +1,7 @@
 package test.engine;
 
 import lombok.Data;
-import me.tianjx98.jscrapy.pipeline.Item;
+import cn.tianjx98.jscrapy.pipeline.Item;
 
 /**
  * @author tianjx98

@@ -5,11 +5,11 @@
 # 快速使用
 
 ```java
-import me.tianjx98.jscrapy.core.Element;
-import me.tianjx98.jscrapy.core.Spider;
-import me.tianjx98.jscrapy.core.SpiderEngine;
-import me.tianjx98.jscrapy.core.annotation.ScraperElement;
-import me.tianjx98.jscrapy.http.Response;
+import Element;
+import Spider;
+import SpiderEngine;
+import ScraperElement;
+import Response;
 import reactor.core.publisher.Flux;
 
 @ScraperElement

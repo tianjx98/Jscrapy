@@ -1,6 +1,6 @@
 package test.engine;
 
-import me.tianjx98.jscrapy.core.SpiderEngine;
+import cn.tianjx98.jscrapy.core.SpiderEngine;
 
 /**
  * @author tianjx98
