@@ -1,7 +1,5 @@
 package me.tianjx98.jscrapy.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
@@ -9,8 +7,6 @@ import lombok.Data;
  * @author 18872653103
  * @date 2021/7/19 12:45
  */
-@Component
-@ConfigurationProperties(prefix = "jscrapy")
 @Data
 public class JscrapyConfig {
 
