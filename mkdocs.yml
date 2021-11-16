@@ -1,1 +1,7 @@
 site_name: Jscrapy
+copyright: Copyright &copy; 2021-2022 tianjx98
+repo_url: https://github.com/tianjx98/Jscrapy
+repo_name: tianjx98/Jscrapy
+
+nav:
+  - 主页: index.md
