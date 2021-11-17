@@ -11,4 +11,4 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
 nav:
-  - 主页: home.md
+  - 主页: index.md
