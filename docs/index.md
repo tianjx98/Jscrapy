@@ -1,1 +1,1 @@
-/app/code/Jscrapy/README.md
+../README.md
