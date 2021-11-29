@@ -2,6 +2,7 @@ package cn.tianjx98.jscrapy.core.impl;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.tianjx98.jscrapy.config.JscrapyConfig;

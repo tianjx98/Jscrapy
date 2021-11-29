@@ -23,8 +23,8 @@ public class SimpleSpider implements Spider {
 
     @Override
     public Flux<Element> parse(Response response) {
-        System.out.println(response.getBody());
-        return Flux.empty();
+        log.info("解析响应: {}", response);
+        return Flux.just(new SimpleItem(response.getBody()));
     }
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException {

@@ -26,7 +26,8 @@ public class SpiderEngine {
      */
     public static Engine start(Class<? extends Spider> spiderClass)
             throws InstantiationException, IllegalAccessException {
-        return new DefaultSpiderEngine(defaultConfig(), Lists.newArrayList(spiderClass.newInstance())).start();
+        final String classPackage = spiderClass.getPackage().getName();
+        return new DefaultSpiderEngine(defaultConfig(), classPackage).start();
     }
 
     /**
