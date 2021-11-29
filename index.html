@@ -326,9 +326,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="_2">数据持久化</h2>
-<ol>
-<li>定义Item</li>
-</ol>
+<p>1.定义Item</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@Data</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleItem</span> <span class="kd">extends</span> <span class="n">Item</span> <span class="p">{</span>
     <span class="n">String</span> <span class="n">body</span><span class="p">;</span>
@@ -338,9 +336,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<ol>
-<li>定义Pipeline</li>
-</ol>
+<p>2.定义Pipeline</p>
 <div class="highlight"><pre><span></span><code><span class="cm">/**</span>
 <span class="cm"> * 可以使用Pipeline完成数据持久化的逻辑&lt;br&gt;</span>
 <span class="cm"> * 采用了过滤器设计模式, 可以定义多个Pipeline对数据进行处理&lt;br&gt;</span>
@@ -372,9 +368,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<ol>
-<li>启动爬虫</li>
-</ol>
+<p>3.启动爬虫</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@ScraperElement</span>
 <span class="nd">@Log4j2</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleSpider</span> <span class="kd">implements</span> <span class="n">Spider</span> <span class="p">{</span>
