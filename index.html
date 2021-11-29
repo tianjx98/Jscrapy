@@ -325,6 +325,80 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+<h2 id="_2">数据持久化</h2>
+<ol>
+<li>定义Item</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nd">@Data</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleItem</span> <span class="kd">extends</span> <span class="n">Item</span> <span class="p">{</span>
+    <span class="n">String</span> <span class="n">body</span><span class="p">;</span>
+
+    <span class="kd">public</span> <span class="nf">SimpleItem</span><span class="p">(</span><span class="n">String</span> <span class="n">body</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">body</span> <span class="o">=</span> <span class="n">body</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>定义Pipeline</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> * 可以使用Pipeline完成数据持久化的逻辑&lt;br&gt;</span>
+<span class="cm"> * 采用了过滤器设计模式, 可以定义多个Pipeline对数据进行处理&lt;br&gt;</span>
+<span class="cm"> * 注意: 如果模板参数为SimpleItem, 那么这个Pipeline就只会处理类型为SimpleItem的Item</span>
+<span class="cm"> *</span>
+<span class="cm"> * @author tianjx98</span>
+<span class="cm"> * @date 2021/11/4 15:06</span>
+<span class="cm"> */</span>
+<span class="nd">@Log4j2</span>
+<span class="nd">@ScraperElement</span>
+<span class="nd">@Order</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimplePipeline</span> <span class="kd">implements</span> <span class="n">Pipeline</span><span class="o">&lt;</span><span class="n">SimpleItem</span><span class="o">&gt;</span> <span class="p">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">open</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// 启动时执行此方法</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">SimpleItem</span> <span class="nf">processItem</span><span class="p">(</span><span class="n">SimpleItem</span> <span class="n">item</span><span class="p">,</span> <span class="n">Spider</span> <span class="n">spider</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;SimplePipeline: &quot;</span> <span class="o">+</span> <span class="n">item</span><span class="p">);</span>
+        <span class="c1">// 保存数据</span>
+        <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// 结束时执行此方法</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>启动爬虫</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nd">@ScraperElement</span>
+<span class="nd">@Log4j2</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleSpider</span> <span class="kd">implements</span> <span class="n">Spider</span> <span class="p">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&quot;simpleSpider&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Flux</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">startUrls</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">Flux</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="s">&quot;https://www.baidu.com&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Flux</span><span class="o">&lt;</span><span class="n">Element</span><span class="o">&gt;</span> <span class="nf">parse</span><span class="p">(</span><span class="n">Response</span> <span class="n">response</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;解析响应: {}&quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">Flux</span><span class="p">.</span><span class="na">just</span><span class="p">(</span><span class="k">new</span> <span class="n">SimpleItem</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="na">getBody</span><span class="p">()));</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">InstantiationException</span><span class="p">,</span> <span class="n">IllegalAccessException</span> <span class="p">{</span>
+        <span class="n">SpiderEngine</span><span class="p">.</span><span class="na">start</span><span class="p">(</span><span class="n">SimpleSpider</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
                 
               
               
