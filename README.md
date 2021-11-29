@@ -49,7 +49,7 @@ public class SimpleSpider implements Spider {
 
 ## 数据持久化
 
-1. 定义Item
+1.定义Item
 
 ```java
 
@@ -63,7 +63,7 @@ public class SimpleItem extends Item {
 }
 ```
 
-2. 定义Pipeline
+2.定义Pipeline
 
 ```java
 /**
@@ -98,7 +98,7 @@ public class SimplePipeline implements Pipeline<SimpleItem> {
 }
 ```
 
-3. 启动爬虫
+3.启动爬虫
 
 ```java
 @ScraperElement
