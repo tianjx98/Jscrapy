@@ -1,7 +1,14 @@
 site_name: Jscrapy
+theme:
+  language: zh
+  name: material
+  features:
+    - navigation.tabs
 copyright: Copyright &copy; 2021-2022 tianjx98
 repo_url: https://github.com/tianjx98/Jscrapy
 repo_name: tianjx98/Jscrapy
-
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
 nav:
   - 主页: index.md
